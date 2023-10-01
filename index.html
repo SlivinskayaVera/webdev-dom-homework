@@ -145,11 +145,12 @@
     initButtonLikeListeners();
 
     const initButtonEditCommentListener = () => {
+        const buttonsEditCommentElement = document.querySelectorAll(".button-edit-comment");
 
         for (const buttonEditCommentElement of buttonsEditCommentElement) {
             buttonEditCommentElement.addEventListener("click", () => {
                 console.log("Пока ничего не редактирую")
-                
+
             })
         }
 
