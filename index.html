@@ -34,6 +34,8 @@
     const buttonDelElement = document.querySelector(".del-form-button");
     const listElement = document.querySelector(".comments");
     const buttonsLikeElement = document.querySelectorAll(".like-button");
+    const buttonsEditCommentElement = document.querySelectorAll(".button-edit-comment");
+
 
 
     const comments = [
@@ -142,6 +144,20 @@
 
     initButtonLikeListeners();
 
+    const initButtonEditCommentListener = () => {
+
+        for (const buttonEditCommentElement of buttonsEditCommentElement) {
+            buttonEditCommentElement.addEventListener("click", () => {
+                console.log("Пока ничего не редактирую")
+                
+            })
+        }
+
+    };
+
+    initButtonEditCommentListener();
+
+
 
     const renderComments = () => {
 
@@ -164,6 +180,9 @@
                             <button data-index="${index}" class="like-button -active-like"></button>
                         </div>
                     </div>
+                        <div class="add-form-row">
+                            <button class="button-edit-comment">Редактировать</button>
+                        </div>
                 </li>`
 
             } else {
@@ -183,12 +202,16 @@
                             <button data-index="${index}" class="like-button"></button>
                         </div>
                     </div>
-                </li>`                
+                        <div class="add-form-row">
+                            <button class="button-edit-comment">Редактировать</button>
+                        </div>
+                </li>`
             }
         }).join("");
 
         listElement.innerHTML = commentsHTML;
         initButtonLikeListeners();
+        initButtonEditCommentListener();
 
     };
     renderComments();
