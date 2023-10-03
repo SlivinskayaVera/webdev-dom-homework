@@ -14,7 +14,7 @@
         </ul>
         <div class="add-form">
             <input id="input-name" type="text" class="add-form-name" placeholder="Введите ваше имя" />
-            <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"></textarea>
+            <textarea type="textarea" class="add-form-text" placeholder="Введите ваш комментарий" rows="4"></textarea>
             <div class="add-form-row">
                 <button class="add-form-button">Написать</button>
             </div>
@@ -34,9 +34,6 @@
     const buttonDelElement = document.querySelector(".del-form-button");
     const listElement = document.querySelector(".comments");
     const buttonsLikeElement = document.querySelectorAll(".like-button");
-    const buttonsEditCommentElement = document.querySelectorAll(".button-edit-comment");
-
-
 
     const comments = [
         {
@@ -133,10 +130,18 @@
     const initButtonLikeListeners = () => {
         const buttonsLikeElement = document.querySelectorAll(".like-button");
 
+
         for (const buttonLikeElement of buttonsLikeElement) {
             buttonLikeElement.addEventListener("click", () => {
                 const index = buttonLikeElement.dataset.index;
-                comments[index].likesCounter += 1;
+                if (!comments[index].likes) {
+                    comments[index].likes = true;
+                    comments[index].likesCounter += 1;
+
+                } else {
+                    comments[index].likes = false;
+                    comments[index].likesCounter -= 1;
+                }
                 renderComments();
             })
         }
@@ -144,20 +149,42 @@
 
     initButtonLikeListeners();
 
+
     const initButtonEditCommentListener = () => {
         const buttonsEditCommentElement = document.querySelectorAll(".button-edit-comment");
 
         for (const buttonEditCommentElement of buttonsEditCommentElement) {
             buttonEditCommentElement.addEventListener("click", () => {
-                console.log("Пока ничего не редактирую")
+                // buttonEditCommentElement.disabled = true;
+                const index = buttonEditCommentElement.dataset.index;
 
+                const textArea = `
+                <div class="edit-form">
+                    <textarea type="textarea" class="edit-form-text" placeholder="${comments[index].comment}" rows="4"></textarea>
+                    <div class="add-form-row">
+                        <button class="save-form-button">Сохранить</button>
+                        </div>
+                        </div>`;
+
+                comments[index].comment = textArea;
+                renderComments();
+
+                const buttonSaveElement = document.querySelector(".save-form-button");
+
+                buttonSaveElement.addEventListener("click", () => {
+                    const inputTextElement = document.querySelector(".edit-form-text");
+
+                    if (inputTextElement.value !== "") {
+                        const textUser = inputTextElement.value;
+                        comments[index].comment = textUser;
+                        renderComments();
+                    }
+                })
             })
         }
-
     };
 
     initButtonEditCommentListener();
-
 
 
     const renderComments = () => {
@@ -181,8 +208,8 @@
                             <button data-index="${index}" class="like-button -active-like"></button>
                         </div>
                     </div>
-                        <div class="add-form-row">
-                            <button class="button-edit-comment">Редактировать</button>
+                        <div class="edit-form-row">
+                            <button class="button-edit-comment" data-index="${index}">Редактировать</button>
                         </div>
                 </li>`
 
@@ -203,8 +230,8 @@
                             <button data-index="${index}" class="like-button"></button>
                         </div>
                     </div>
-                        <div class="add-form-row">
-                            <button class="button-edit-comment">Редактировать</button>
+                        <div class="edit-form-row">
+                            <button class="button-edit-comment" data-index="${index}">Редактировать</button>
                         </div>
                 </li>`
             }
@@ -219,7 +246,5 @@
 
     console.log("It works!");
 </script>
-
-
 
 </html>
