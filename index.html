@@ -160,7 +160,7 @@
 
                 const textArea = `
                 <div class="edit-form">
-                    <textarea type="textarea" class="edit-form-text" placeholder="${comments[index].comment}" rows="4"></textarea>
+                    <textarea class="edit-form-text" rows="4">${comments[index].comment}</textarea>
                     <div class="add-form-row">
                         <button class="save-form-button">Сохранить</button>
                         </div>
@@ -191,7 +191,6 @@
 
         const commentsHTML = comments.map((comment, index) => {
 
-            if (comments[index].likesCounter > 0) {
                 return `<li class="comment">
                     <div class="comment-header">
                         <div>${comment.name}</div>
@@ -205,36 +204,13 @@
                     <div class="comment-footer">
                         <div class="likes">
                             <span class="likes-counter">${comment.likesCounter}</span>
-                            <button data-index="${index}" class="like-button -active-like"></button>
+                            <button data-index="${index}" class="like-button ${comment.likes ? '-active-like' : ''}"></button>
                         </div>
                     </div>
                         <div class="edit-form-row">
                             <button class="button-edit-comment" data-index="${index}">Редактировать</button>
                         </div>
                 </li>`
-
-            } else {
-                return `<li class="comment">
-                    <div class="comment-header">
-                        <div>${comment.name}</div>
-                        <div>${comment.date}</div>
-                    </div>
-                    <div class="comment-body">
-                        <div class="comment-text">
-                            ${comment.comment}
-                        </div>
-                    </div>
-                    <div class="comment-footer">
-                        <div class="likes">
-                            <span class="likes-counter">${comment.likesCounter}</span>
-                            <button data-index="${index}" class="like-button"></button>
-                        </div>
-                    </div>
-                        <div class="edit-form-row">
-                            <button class="button-edit-comment" data-index="${index}">Редактировать</button>
-                        </div>
-                </li>`
-            }
         }).join("");
 
         listElement.innerHTML = commentsHTML;
