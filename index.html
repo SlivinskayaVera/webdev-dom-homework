@@ -14,7 +14,7 @@
         </ul>
         <div class="add-form">
             <input id="input-name" type="text" class="add-form-name" placeholder="Введите ваше имя" />
-            <textarea type="textarea" class="add-form-text" placeholder="Введите ваш комментарий" rows="4"></textarea>
+            <textarea class="add-form-text" placeholder="Введите ваш комментарий" rows="4"></textarea>
             <div class="add-form-row">
                 <button class="add-form-button">Написать</button>
             </div>
@@ -155,31 +155,26 @@
 
         for (const buttonEditCommentElement of buttonsEditCommentElement) {
             buttonEditCommentElement.addEventListener("click", () => {
-                // buttonEditCommentElement.disabled = true;
                 const index = buttonEditCommentElement.dataset.index;
 
-                const textArea = `
-                <div class="edit-form">
-                    <textarea class="edit-form-text" rows="4">${comments[index].comment}</textarea>
-                    <div class="add-form-row">
-                        <button class="save-form-button">Сохранить</button>
-                        </div>
-                        </div>`;
+                if (buttonEditCommentElement.innerHTML === 'Редактировать') {
+                    const commentElement = document.querySelectorAll('.comment-body')[index];
 
-                comments[index].comment = textArea;
-                renderComments();
+                    commentElement.innerHTML = `
+            <div class="edit-form">
+                <textarea class="edit-form-text" rows="4">${comments[index].comment}</textarea>
+            </div>`;
 
-                const buttonSaveElement = document.querySelector(".save-form-button");
+                    buttonEditCommentElement.innerHTML = 'Сохранить';
 
-                buttonSaveElement.addEventListener("click", () => {
+                } else {
                     const inputTextElement = document.querySelector(".edit-form-text");
 
                     if (inputTextElement.value !== "") {
-                        const textUser = inputTextElement.value;
-                        comments[index].comment = textUser;
+                        comments[index].comment = inputTextElement.value;
                         renderComments();
                     }
-                })
+                }
             })
         }
     };
@@ -191,7 +186,7 @@
 
         const commentsHTML = comments.map((comment, index) => {
 
-                return `<li class="comment">
+            return `<li class="comment">
                     <div class="comment-header">
                         <div>${comment.name}</div>
                         <div>${comment.date}</div>
