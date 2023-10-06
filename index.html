@@ -105,13 +105,12 @@
     // после удаления последнего комментария, если добавить следующий коммент, удаленный коммент возвращается 
 
     buttonDelElement.addEventListener("click", () => {
-        let commentsList = listElement.innerHTML;
-        const indexLastListElement = commentsList.lastIndexOf('<li class="comment" data-index=');
-        const lastComment = commentsList.slice(indexLastListElement);
-        listElement.innerHTML = commentsList.replace(lastComment, '');
-        // renderComments();
-        
-        return;
+        // let commentsList = listElement.innerHTML;
+        // const indexLastListElement = commentsList.lastIndexOf('<li class="comment" data-index=');
+        // const lastComment = commentsList.slice(indexLastListElement);
+        // listElement.innerHTML = commentsList.replace(lastComment, '');
+        comments.pop();
+        renderComments();
     });
 
 
