@@ -106,10 +106,11 @@
 
     buttonDelElement.addEventListener("click", () => {
         let commentsList = listElement.innerHTML;
-        const indexLastListElement = commentsList.lastIndexOf('<li class="comment" data-index='); 
+        const indexLastListElement = commentsList.lastIndexOf('<li class="comment" data-index=');
         const lastComment = commentsList.slice(indexLastListElement);
         listElement.innerHTML = commentsList.replace(lastComment, '');
-        debugger;
+        // renderComments();
+        
         return;
     });
 
@@ -189,16 +190,14 @@
 
     const initReplyCommentListener = () => {
         const commentsList = document.querySelectorAll('.comment');
-        const formText = document.querySelector('.add-form-text');
+        const inputTextElement = document.querySelector('.add-form-text');
 
         for (const comment of commentsList) {
             comment.addEventListener('click', () => {
                 const index = comment.dataset.index;
-                return formText.innerHTML = `START_QUOTE ${comments[index].name}: &#10;${comments[index].comment}&#10; END_QUOTE`;
-                renderComments();
+                inputTextElement.value = `START_QUOTE ${comments[index].name}: ${comments[index].comment} END_QUOTE`;
             })
         }
-        formText.innerHTML = '';
     }
 
     initReplyCommentListener();
