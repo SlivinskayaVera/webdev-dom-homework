@@ -68,6 +68,14 @@ body {
   font-size: 32px;
 }
 
+.quote {
+  font-size: 24px;
+  color: #202020;
+  background-color: aliceblue;
+  padding: 5px;
+  margin-bottom: 15px;
+}
+
 .likes {
   display: flex;
   align-items: center;

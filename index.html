@@ -196,9 +196,8 @@
                 const nameComment = comments[index].name;
                 const commentComment = comments[index].comment;
 
-                formText.innerHTML = `>${commentComment} &#10;${nameComment}&#10;`;
+                formText.innerHTML = `START_QUOTE ${nameComment}: &#10;${commentComment}&#10; END_QUOTE`;
                 renderComments();
-                
             })
         }
     }
@@ -218,7 +217,8 @@
                 .replaceAll("&", "&amp;")
                 .replaceAll("<", "&lt;")
                 .replaceAll(">", "&gt;")
-                .replaceAll('"', "&quot;");
+                .replaceAll('"', "&quot;")
+                .replaceAll("START_QUOTE", '<div class="quote">').replaceAll("END_QUOTE", '</div>');
 
 
 
