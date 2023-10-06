@@ -106,9 +106,10 @@
 
     buttonDelElement.addEventListener("click", () => {
         let commentsList = listElement.innerHTML;
-        const indexLastListElement = commentsList.lastIndexOf('<li class="comment">');
+        const indexLastListElement = commentsList.lastIndexOf('<li class="comment" data-index='); 
         const lastComment = commentsList.slice(indexLastListElement);
         listElement.innerHTML = commentsList.replace(lastComment, '');
+        debugger;
         return;
     });
 
@@ -188,19 +189,20 @@
 
     const initReplyCommentListener = () => {
         const commentsList = document.querySelectorAll('.comment');
+        const formText = document.querySelector('.add-form-text');
 
         for (const comment of commentsList) {
             comment.addEventListener('click', () => {
                 const index = comment.dataset.index;
-                const formText = document.querySelector('.add-form-text');
-                const nameComment = comments[index].name;
-                const commentComment = comments[index].comment;
-
-                formText.innerHTML = `START_QUOTE ${nameComment}: &#10;${commentComment}&#10; END_QUOTE`;
+                return formText.innerHTML = `START_QUOTE ${comments[index].name}: &#10;${comments[index].comment}&#10; END_QUOTE`;
                 renderComments();
             })
         }
+        formText.innerHTML = '';
     }
+
+    initReplyCommentListener();
+
 
     const renderComments = () => {
 
@@ -245,16 +247,12 @@
         }).join("");
 
         listElement.innerHTML = commentsHTML;
+        initReplyCommentListener();
         initButtonLikeListeners();
         initButtonEditCommentListener();
-        initReplyCommentListener();
 
     };
     renderComments();
-
-
-
-    initReplyCommentListener();
 
     console.log("It works!");
 
