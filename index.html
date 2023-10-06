@@ -102,6 +102,8 @@
         buttonElement.disabled = true;
     })
 
+    // после удаления последнего комментария, если добавить следующий коммент, удаленный коммент возвращается 
+
     buttonDelElement.addEventListener("click", () => {
         let commentsList = listElement.innerHTML;
         const indexLastListElement = commentsList.lastIndexOf('<li class="comment">');
@@ -111,7 +113,7 @@
     });
 
 
-    inputTextElement.addEventListener("keyup", enter => {
+    inputTextElement.addEventListener("keyup", (enter) => {
 
         if (enter.code === 'Enter' && inputNameElement.value !== "" && inputTextElement.value !== "") {
             addNewComment();
@@ -119,7 +121,7 @@
         }
     });
 
-    inputNameElement.addEventListener("keyup", enter => {
+    inputNameElement.addEventListener("keyup", (enter) => {
 
         if (enter.code === 'Enter' && inputNameElement.value !== "" && inputTextElement.value !== "") {
             addNewComment();
@@ -130,9 +132,10 @@
     const initButtonLikeListeners = () => {
         const buttonsLikeElement = document.querySelectorAll(".like-button");
 
-
         for (const buttonLikeElement of buttonsLikeElement) {
-            buttonLikeElement.addEventListener("click", () => {
+            buttonLikeElement.addEventListener("click", (event) => {
+                event.stopPropagation();
+
                 const index = buttonLikeElement.dataset.index;
                 if (!comments[index].likes) {
                     comments[index].likes = true;
@@ -149,12 +152,12 @@
 
     initButtonLikeListeners();
 
-
     const initButtonEditCommentListener = () => {
         const buttonsEditCommentElement = document.querySelectorAll(".button-edit-comment");
 
         for (const buttonEditCommentElement of buttonsEditCommentElement) {
-            buttonEditCommentElement.addEventListener("click", () => {
+            buttonEditCommentElement.addEventListener("click", (event) => {
+                event.stopPropagation();
                 const index = buttonEditCommentElement.dataset.index;
 
                 if (buttonEditCommentElement.innerHTML === 'Редактировать') {
@@ -181,19 +184,52 @@
 
     initButtonEditCommentListener();
 
+    //отправляет коммент в форму только один раз
+
+    const initReplyCommentListener = () => {
+        const commentsList = document.querySelectorAll('.comment');
+
+        for (const comment of commentsList) {
+            comment.addEventListener('click', () => {
+                const index = comment.dataset.index;
+                const formText = document.querySelector('.add-form-text');
+                const nameComment = comments[index].name;
+                const commentComment = comments[index].comment;
+
+                formText.innerHTML = `>${commentComment} &#10;${nameComment}&#10;`;
+                renderComments();
+                
+            })
+        }
+    }
 
     const renderComments = () => {
 
         const commentsHTML = comments.map((comment, index) => {
 
-            return `<li class="comment">
+
+            const safeName = comment.name
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;");
+
+            const safeComment = comment.comment
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;");
+
+
+
+            return `<li class="comment" data-index="${index}">
                     <div class="comment-header">
-                        <div>${comment.name}</div>
+                        <div>${safeName}</div>
                         <div>${comment.date}</div>
                     </div>
                     <div class="comment-body">
-                        <div class="comment-text">
-                            ${comment.comment}
+                        <div class="comment-text" data-index="${index}">
+                            ${safeComment}
                         </div>
                     </div>
                     <div class="comment-footer">
@@ -211,11 +247,18 @@
         listElement.innerHTML = commentsHTML;
         initButtonLikeListeners();
         initButtonEditCommentListener();
+        initReplyCommentListener();
 
     };
     renderComments();
 
+
+
+    initReplyCommentListener();
+
     console.log("It works!");
+
+
 </script>
 
 </html>
