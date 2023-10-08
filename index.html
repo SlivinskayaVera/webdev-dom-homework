@@ -41,14 +41,16 @@
             date: "12.02.22 12:18",
             comment: "Это будет первый комментарий на этой странице",
             likes: true,
-            likesCounter: 3
+            likesCounter: 3,
+            isEditor: false
         },
         {
             name: "Варвара Н.",
             date: "13.02.22 19:22",
             comment: "Мне нравится как оформлена эта страница! ❤",
             likes: true,
-            likesCounter: 75
+            likesCounter: 75,
+            isEditor: false
         },
     ];
 
@@ -88,7 +90,9 @@
             date: `${date} ${hour}:${minutes}`,
             comment: textUser,
             likes: false,
-            likesCounter: 0
+            likesCounter: 0,
+            isEditor: false
+
         });
 
         renderComments();
@@ -163,6 +167,7 @@
                 event.stopPropagation();
                 const index = buttonEditCommentElement.dataset.index;
                 // const comment = document.querySelectorAll('.comment')[index];
+                comments[index].isEditor = true;
                                
                 
                 if (buttonEditCommentElement.innerHTML === 'Редактировать') {
@@ -197,9 +202,11 @@
         const commentsList = document.querySelectorAll('.comment');
         const inputTextElement = document.querySelector('.add-form-text');
 
+        
         for (const comment of commentsList) {
             comment.addEventListener('click', () => {
                 const index = comment.dataset.index;
+                if (comments[index].isEditor === true) return;
                 inputTextElement.value = `START_QUOTE ${comments[index].name}: ${comments[index].comment} END_QUOTE`;
             })
         }
@@ -236,9 +243,10 @@
                     </div>
                         <div class="edit-form-row">
                             <button class="button-edit-comment" data-index="${index}">Редактировать</button>
-                        </div>
-                </li>`
-        }).join("");
+                            </div>
+                            </li>`
+                        }).join("");
+                        // <button class="button-edit-comment" data-index="${index}">${comment.isEditor ? "Сохранить" : "Редактировать"}</button>
 
         listElement.innerHTML = commentsHTML;
         initButtonEditCommentListener();
