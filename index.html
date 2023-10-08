@@ -156,18 +156,22 @@
     const initButtonEditCommentListener = () => {
         const buttonsEditCommentElement = document.querySelectorAll(".button-edit-comment");
 
+
         for (const buttonEditCommentElement of buttonsEditCommentElement) {
-            buttonEditCommentElement.addEventListener("click", (event) => {
+            buttonEditCommentElement.addEventListener("click", () => {
+
                 event.stopPropagation();
                 const index = buttonEditCommentElement.dataset.index;
-
+                // const comment = document.querySelectorAll('.comment')[index];
+                               
+                
                 if (buttonEditCommentElement.innerHTML === 'Редактировать') {
                     const commentElement = document.querySelectorAll('.comment-body')[index];
 
                     commentElement.innerHTML = `
-            <div class="edit-form">
-                <textarea class="edit-form-text" rows="4">${comments[index].comment}</textarea>
-            </div>`;
+                    <div class="edit-form">
+                        <textarea class="edit-form-text" rows="4">${comments[index].comment}</textarea>
+                        </div>`;
 
                     buttonEditCommentElement.innerHTML = 'Сохранить';
 
@@ -178,14 +182,16 @@
                         comments[index].comment = inputTextElement.value;
                         renderComments();
                     }
+
                 }
+
             })
         }
+
     };
 
     initButtonEditCommentListener();
 
-    //отправляет коммент в форму только один раз
 
     const initReplyCommentListener = () => {
         const commentsList = document.querySelectorAll('.comment');
@@ -201,26 +207,16 @@
 
     initReplyCommentListener();
 
+    const sanitizeHtml = (htmlString) => {
+        return htmlString.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("START_QUOTE", '<div class="quote">').replaceAll("END_QUOTE", '</div>');
+    };
 
     const renderComments = () => {
 
         const commentsHTML = comments.map((comment, index) => {
-
-
-            const safeName = comment.name
-                .replaceAll("&", "&amp;")
-                .replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;")
-                .replaceAll('"', "&quot;");
-
-            const safeComment = comment.comment
-                .replaceAll("&", "&amp;")
-                .replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;")
-                .replaceAll('"', "&quot;")
-                .replaceAll("START_QUOTE", '<div class="quote">').replaceAll("END_QUOTE", '</div>');
-
-
+            
+            const safeName = sanitizeHtml(comment.name);
+            const safeComment = sanitizeHtml(comment.comment);
 
             return `<li class="comment" data-index="${index}">
                     <div class="comment-header">
@@ -245,9 +241,9 @@
         }).join("");
 
         listElement.innerHTML = commentsHTML;
+        initButtonEditCommentListener();
         initReplyCommentListener();
         initButtonLikeListeners();
-        initButtonEditCommentListener();
 
     };
     renderComments();
