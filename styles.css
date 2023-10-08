@@ -45,6 +45,7 @@ body {
 
 .comment {
   padding: 48px;
+  cursor: pointer;
 }
 
 .comment-header {
@@ -65,6 +66,14 @@ body {
 
 .comment-text {
   font-size: 32px;
+}
+
+.quote {
+  font-size: 24px;
+  color: #202020;
+  background-color: aliceblue;
+  padding: 5px;
+  margin-bottom: 15px;
 }
 
 .likes {
