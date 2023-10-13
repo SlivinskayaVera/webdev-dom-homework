@@ -35,18 +35,8 @@
     const listElement = document.querySelector(".comments");
     const buttonsLikeElement = document.querySelectorAll(".like-button");
 
+
     let comments = [];
-
-    fetch('https://wedev-api.sky.pro/api/v1/gleb-fokin/comments', {
-        method: 'GET',
-    }).then((response) => {
-        response.json().then((responseComments) => {
-            comments = responseComments.comments;
-            renderComments();
-        })
-    });
-
-    console.log(comments);
 
     buttonElement.disabled = true;
 
@@ -133,19 +123,14 @@
     const initButtonLikeListeners = () => {
         const buttonsLikeElement = document.querySelectorAll(".like-button");
 
-        fetch('https://wedev-api.sky.pro/api/v1/gleb-fokin/comments', {
-            method: 'GET',
-        }).then((response) => {
-            response.json().then((responseComments) => {
-                comments = responseComments.comments;
-            })
-        });
-
+        
         for (const buttonLikeElement of buttonsLikeElement) {
             buttonLikeElement.addEventListener("click", (event) => {
                 event.stopPropagation();
-
-                const index = buttonLikeElement.dataset.id;
+                
+                let index = buttonLikeElement.dataset.index;
+                console.log(index);
+                console.log(comments[index]);
                 if (!comments[index].isLiked) {
                     comments[index].isLiked = true;
                     comments[index].likes += 1;
@@ -212,7 +197,7 @@
         for (const comment of commentsList) {
             comment.addEventListener('click', () => {
                 const index = comment.dataset.id;
-                if (comments[index].isEditor === true) return;
+                // if (comments[index].isEditor === true) return;
                 inputTextElement.value = `START_QUOTE ${comments[index].name}: ${comments[index].comment} END_QUOTE`;
             })
         }
@@ -222,11 +207,23 @@
 
 
 
+    fetch('https://wedev-api.sky.pro/api/v1/gleb-fokin/comments', {
+        method: 'GET',
+    }).then((response) => {
+        response.json().then((responseComments) => {
+            comments = responseComments.comments;
+            renderComments();
+        })
+    });
+
+    console.log(comments);
+
+
     // Рендер функция
 
     const renderComments = () => {
 
-        const commentsHTML = comments.map((comment) => {
+        const commentsHTML = comments.map((comment, index) => {
 
             const correctDate = comment.date.slice(0, 10);
             const correctTime = comment.date.slice(11, 19);
@@ -244,11 +241,11 @@
                     <div class="comment-footer">
                         <div class="likes">
                             <span class="likes-counter">${comment.likes}</span>
-                            <button data-id="${comment.id}" class="like-button ${comment.isLiked ? '-active-like' : ''}"></button>
+                            <button data-index="${index}" class="like-button ${comment.isLiked ? '-active-like' : ''}"></button>
                         </div>
                     </div>
                         <div class="edit-form-row">
-                            <button class="button-edit-comment" data-id="${comment.id}">Редактировать</button>
+                            <button class="button-edit-comment" data-index="${index}">Редактировать</button>
                             </div>
                             </li>`
         }).join("");
