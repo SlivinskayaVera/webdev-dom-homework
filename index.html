@@ -12,7 +12,7 @@
         <ul class="comments">
             <!-- Здесь рендерятся комменты, если я всё напишу правильно -->
         </ul>
-        <div class="add-form">
+        <div class="add-form" data-isLoading=false>
             <input id="input-name" type="text" class="add-form-name" placeholder="Введите ваше имя" />
             <textarea class="add-form-text" placeholder="Введите ваш комментарий" rows="4"></textarea>
             <div class="add-form-row">
@@ -38,6 +38,15 @@
 
     let comments = [];
 
+    fetch('https://wedev-api.sky.pro/api/v1/gleb-fokin/comments', {
+        method: 'GET',
+    }).then((response) => {
+        response.json().then((responseComments) => {
+            comments = responseComments.comments;
+            renderComments();
+        })
+    });
+
     buttonElement.disabled = true;
 
     document.addEventListener("input", () => {
@@ -54,11 +63,39 @@
 
 
 
+    const changeForm = () => {
+        const inputFormElement = document.querySelector(".add-form");
+
+            const htmlForm = `<p>Комментарий загружается...</p>`;
+
+            const normalForm = `<input id="input-name" type="text" class="add-form-name" placeholder="Введите ваше имя" />
+            <textarea class="add-form-text" placeholder="Введите ваш комментарий" rows="4"></textarea>
+            <div class="add-form-row">
+                <button class="add-form-button">Написать</button>
+            </div>
+            <div class="del-form-row">
+                <button class="del-form-button" style="margin-left: 10px;">Удалить последний комментарий</button>
+            </div>`;
+
+            if (inputFormElement.dataset.isLoading) {
+                inputFormElement.innerHTML = htmlForm;
+            } else {
+                inputFormElement.innerHTML =  normalForm;
+            }
+
+            return inputFormElement.innerHTML;
+    }
+    
+
+
     // Добавление нового коммента
 
     const addNewComment = () => {
         const nameUser = sanitizeHtml(inputNameElement.value);
         const textUser = sanitizeHtml(inputTextElement.value);
+        const inputFormElement = document.querySelector(".add-form");
+
+        inputFormElement.dataset.isloading = true;
 
         fetch('https://wedev-api.sky.pro/api/v1/gleb-fokin/comments', {
             method: 'POST',
@@ -72,7 +109,9 @@
             method: 'GET',
         }).then((response) => {
             response.json().then((responseComments) => {
+                inputFormElement.dataset.isLoading = false;
                 comments = responseComments.comments;
+                changeForm();
                 renderComments();
             })
         });
@@ -123,11 +162,11 @@
     const initButtonLikeListeners = () => {
         const buttonsLikeElement = document.querySelectorAll(".like-button");
 
-        
+
         for (const buttonLikeElement of buttonsLikeElement) {
             buttonLikeElement.addEventListener("click", (event) => {
                 event.stopPropagation();
-                
+
                 let index = buttonLikeElement.dataset.index;
                 console.log(index);
                 console.log(comments[index]);
@@ -206,19 +245,6 @@
     initReplyCommentListener();
 
 
-
-    fetch('https://wedev-api.sky.pro/api/v1/gleb-fokin/comments', {
-        method: 'GET',
-    }).then((response) => {
-        response.json().then((responseComments) => {
-            comments = responseComments.comments;
-            renderComments();
-        })
-    });
-
-    console.log(comments);
-
-
     // Рендер функция
 
     const renderComments = () => {
@@ -227,6 +253,8 @@
 
             const correctDate = comment.date.slice(0, 10);
             const correctTime = comment.date.slice(11, 19);
+
+           
 
             return `<li class="comment" data-id="${comment.id}">
                     <div class="comment-header">
@@ -249,8 +277,8 @@
                             </div>
                             </li>`
         }).join("");
-
-
+        
+               
         listElement.innerHTML = commentsHTML;
         initButtonEditCommentListener();
         initReplyCommentListener();
