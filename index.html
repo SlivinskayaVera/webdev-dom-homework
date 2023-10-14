@@ -12,7 +12,10 @@
         <ul class="comments">
             <!-- Здесь рендерятся комменты, если я всё напишу правильно -->
         </ul>
-        <div class="add-form" data-isLoading=false>
+        <div class="loading">
+            <p>Комментарий загружается...</p>
+        </div>
+        <div class="add-form">
             <input id="input-name" type="text" class="add-form-name" placeholder="Введите ваше имя" />
             <textarea class="add-form-text" placeholder="Введите ваш комментарий" rows="4"></textarea>
             <div class="add-form-row">
@@ -38,14 +41,28 @@
 
     let comments = [];
 
-    fetch('https://wedev-api.sky.pro/api/v1/gleb-fokin/comments', {
-        method: 'GET',
-    }).then((response) => {
-        response.json().then((responseComments) => {
-            comments = responseComments.comments;
-            renderComments();
-        })
-    });
+    const getFetchResponse = () => {
+        fetch('https://wedev-api.sky.pro/api/v1/slivaaa/comments', {
+            method: 'GET',
+        }).then((response) => {
+            response.json().then((responseComments) => {
+                const appComments = responseComments.comments.map((comment) => {
+                    return {
+                        name: comment.author.name,
+                        date: new Date(comment.date),
+                        text: comment.text,
+                        likes: comment.likes,
+                        isLiked: false,
+                    };
+                });
+                comments = appComments;
+                renderComments();
+            })
+        });
+    };
+
+    getFetchResponse();
+
 
     buttonElement.disabled = true;
 
@@ -57,35 +74,11 @@
         }
     });
 
+
     const sanitizeHtml = (htmlString) => {
         return htmlString.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("START_QUOTE", '<div class="quote">').replaceAll("END_QUOTE", '</div>');
     };
 
-
-
-    const changeForm = () => {
-        const inputFormElement = document.querySelector(".add-form");
-
-            const htmlForm = `<p>Комментарий загружается...</p>`;
-
-            const normalForm = `<input id="input-name" type="text" class="add-form-name" placeholder="Введите ваше имя" />
-            <textarea class="add-form-text" placeholder="Введите ваш комментарий" rows="4"></textarea>
-            <div class="add-form-row">
-                <button class="add-form-button">Написать</button>
-            </div>
-            <div class="del-form-row">
-                <button class="del-form-button" style="margin-left: 10px;">Удалить последний комментарий</button>
-            </div>`;
-
-            if (inputFormElement.dataset.isLoading) {
-                inputFormElement.innerHTML = htmlForm;
-            } else {
-                inputFormElement.innerHTML =  normalForm;
-            }
-
-            return inputFormElement.innerHTML;
-    }
-    
 
 
     // Добавление нового коммента
@@ -94,32 +87,28 @@
         const nameUser = sanitizeHtml(inputNameElement.value);
         const textUser = sanitizeHtml(inputTextElement.value);
         const inputFormElement = document.querySelector(".add-form");
+        const loadingFormElement = document.querySelector(".loading");
 
-        inputFormElement.dataset.isloading = true;
 
-        fetch('https://wedev-api.sky.pro/api/v1/gleb-fokin/comments', {
+        loadingFormElement.classList.add("display-flex");
+        inputFormElement.classList.add("display-hidden");
+
+
+        fetch('https://wedev-api.sky.pro/api/v1/slivaaa/comments', {
             method: 'POST',
             body: JSON.stringify({
                 text: textUser,
                 name: nameUser,
             })
-        });
-
-        fetch('https://wedev-api.sky.pro/api/v1/gleb-fokin/comments', {
-            method: 'GET',
         }).then((response) => {
-            response.json().then((responseComments) => {
-                inputFormElement.dataset.isLoading = false;
-                comments = responseComments.comments;
-                changeForm();
-                renderComments();
-            })
-        });
 
-        inputNameElement.value = "";
-        inputTextElement.value = "";
+            getFetchResponse();
 
+            inputNameElement.value = "";
+            inputTextElement.value = "";
+        })
     };
+
 
     buttonElement.addEventListener("click", () => {
         addNewComment();
@@ -242,24 +231,29 @@
         }
     }
 
-    initReplyCommentListener();
+    // initReplyCommentListener();
 
 
     // Рендер функция
 
     const renderComments = () => {
+        
+        const inputFormElement = document.querySelector(".add-form");
+        const loadingFormElement = document.querySelector(".loading");
+
+        loadingFormElement.classList.remove("display-flex");
+        inputFormElement.classList.remove("display-hidden");
 
         const commentsHTML = comments.map((comment, index) => {
 
-            const correctDate = comment.date.slice(0, 10);
-            const correctTime = comment.date.slice(11, 19);
+            const date = comment.date;
+            const correctDate = new Date(comment.date).toLocaleString('ru-RU', { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).replace(',', '');
 
-           
 
             return `<li class="comment" data-id="${comment.id}">
                     <div class="comment-header">
-                        <div>${comment.author.name}</div>
-                        <div>${correctDate + ' ' + correctTime}</div>
+                        <div>${comment.name}</div>
+                        <div class="comment-date">${correctDate}</div>
                     </div>
                     <div class="comment-body">
                         <div class="comment-text" data-id="${comment.id}">
@@ -277,8 +271,8 @@
                             </div>
                             </li>`
         }).join("");
-        
-               
+
+
         listElement.innerHTML = commentsHTML;
         initButtonEditCommentListener();
         initReplyCommentListener();
