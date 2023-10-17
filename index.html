@@ -12,6 +12,9 @@
         <ul class="comments">
             <!-- Здесь рендерятся комменты, если я всё напишу правильно -->
         </ul>
+        <div class="loading">
+            <p>Комментарий загружается...</p>
+        </div>
         <div class="add-form">
             <input id="input-name" type="text" class="add-form-name" placeholder="Введите ваше имя" />
             <textarea class="add-form-text" placeholder="Введите ваш комментарий" rows="4"></textarea>
@@ -35,22 +38,31 @@
     const listElement = document.querySelector(".comments");
     const buttonsLikeElement = document.querySelectorAll(".like-button");
 
-    const comments = [
-        {
-            name: "Глеб Фокин",
-            date: "12.02.22 12:18",
-            comment: "Это будет первый комментарий на этой странице",
-            likes: true,
-            likesCounter: 3
-        },
-        {
-            name: "Варвара Н.",
-            date: "13.02.22 19:22",
-            comment: "Мне нравится как оформлена эта страница! ❤",
-            likes: true,
-            likesCounter: 75
-        },
-    ];
+
+    let comments = [];
+
+    const getFetchResponse = () => {
+        fetch('https://wedev-api.sky.pro/api/v1/slivaaa/comments', {
+            method: 'GET',
+        }).then((response) => {
+            response.json().then((responseComments) => {
+                const appComments = responseComments.comments.map((comment) => {
+                    return {
+                        name: comment.author.name,
+                        date: new Date(comment.date),
+                        text: comment.text,
+                        likes: comment.likes,
+                        isLiked: false,
+                    };
+                });
+                comments = appComments;
+                renderComments();
+            })
+        });
+    };
+
+    getFetchResponse();
+
 
     buttonElement.disabled = true;
 
@@ -62,57 +74,59 @@
         }
     });
 
-    const addNewComment = () => {
-        const nameUser = inputNameElement.value;
-        const textUser = inputTextElement.value;
-        const oldListHtml = listElement.innerHTML;
 
-        const currentDate = new Date();
-        const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
-        const date = currentDate.toLocaleDateString('ru-RU', options);
-
-        let hour = currentDate.getHours();
-        let minutes = currentDate.getMinutes();
-
-        if (hour < 10 && hour > 0) {
-            hour = "0" + hour;
-        };
-
-        if (minutes < 10) {
-            minutes = "0" + minutes;
-        };
-
-
-        comments.push({
-            name: nameUser,
-            date: `${date} ${hour}:${minutes}`,
-            comment: textUser,
-            likes: false,
-            likesCounter: 0
-        });
-
-        renderComments();
-
-        inputNameElement.value = "";
-        inputTextElement.value = "";
+    const sanitizeHtml = (htmlString) => {
+        return htmlString.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("START_QUOTE", '<div class="quote">').replaceAll("END_QUOTE", '</div>');
     };
+
+
+
+    // Добавление нового коммента
+
+    const addNewComment = () => {
+        const nameUser = sanitizeHtml(inputNameElement.value);
+        const textUser = sanitizeHtml(inputTextElement.value);
+        const inputFormElement = document.querySelector(".add-form");
+        const loadingFormElement = document.querySelector(".loading");
+
+
+        loadingFormElement.classList.add("display-flex");
+        inputFormElement.classList.add("display-hidden");
+
+
+        fetch('https://wedev-api.sky.pro/api/v1/slivaaa/comments', {
+            method: 'POST',
+            body: JSON.stringify({
+                text: textUser,
+                name: nameUser,
+            })
+        }).then((response) => {
+
+            getFetchResponse();
+
+            inputNameElement.value = "";
+            inputTextElement.value = "";
+        })
+    };
+
 
     buttonElement.addEventListener("click", () => {
         addNewComment();
         buttonElement.disabled = true;
     })
 
-    // после удаления последнего комментария, если добавить следующий коммент, удаленный коммент возвращается 
+
+
+    // Удаление последнего коммента
 
     buttonDelElement.addEventListener("click", () => {
-        // let commentsList = listElement.innerHTML;
-        // const indexLastListElement = commentsList.lastIndexOf('<li class="comment" data-index=');
-        // const lastComment = commentsList.slice(indexLastListElement);
-        // listElement.innerHTML = commentsList.replace(lastComment, '');
         comments.pop();
         renderComments();
     });
 
+
+
+    // Обработчики для Enter 
 
     inputTextElement.addEventListener("keyup", (enter) => {
 
@@ -130,21 +144,28 @@
         }
     })
 
+
+
+    // Обработчик лайки
+
     const initButtonLikeListeners = () => {
         const buttonsLikeElement = document.querySelectorAll(".like-button");
+
 
         for (const buttonLikeElement of buttonsLikeElement) {
             buttonLikeElement.addEventListener("click", (event) => {
                 event.stopPropagation();
 
-                const index = buttonLikeElement.dataset.index;
-                if (!comments[index].likes) {
-                    comments[index].likes = true;
-                    comments[index].likesCounter += 1;
+                let index = buttonLikeElement.dataset.index;
+                console.log(index);
+                console.log(comments[index]);
+                if (!comments[index].isLiked) {
+                    comments[index].isLiked = true;
+                    comments[index].likes += 1;
 
                 } else {
-                    comments[index].likes = false;
-                    comments[index].likesCounter -= 1;
+                    comments[index].isLiked = false;
+                    comments[index].likes -= 1;
                 }
                 renderComments();
             })
@@ -153,18 +174,21 @@
 
     initButtonLikeListeners();
 
+
+
+    // Обработчик редактирования коммента
+
     const initButtonEditCommentListener = () => {
         const buttonsEditCommentElement = document.querySelectorAll(".button-edit-comment");
-
 
         for (const buttonEditCommentElement of buttonsEditCommentElement) {
             buttonEditCommentElement.addEventListener("click", () => {
 
                 event.stopPropagation();
+
                 const index = buttonEditCommentElement.dataset.index;
-                // const comment = document.querySelectorAll('.comment')[index];
-                               
-                
+                comments[index].isEditor = true;
+
                 if (buttonEditCommentElement.innerHTML === 'Редактировать') {
                     const commentElement = document.querySelectorAll('.comment-body')[index];
 
@@ -182,63 +206,72 @@
                         comments[index].comment = inputTextElement.value;
                         renderComments();
                     }
-
                 }
-
             })
         }
-
     };
 
     initButtonEditCommentListener();
 
 
+
+    // Обработчик ответа на комментарий
+
     const initReplyCommentListener = () => {
         const commentsList = document.querySelectorAll('.comment');
         const inputTextElement = document.querySelector('.add-form-text');
 
+
         for (const comment of commentsList) {
             comment.addEventListener('click', () => {
-                const index = comment.dataset.index;
+                const index = comment.dataset.id;
+                // if (comments[index].isEditor === true) return;
                 inputTextElement.value = `START_QUOTE ${comments[index].name}: ${comments[index].comment} END_QUOTE`;
             })
         }
     }
 
-    initReplyCommentListener();
+    // initReplyCommentListener();
 
-    const sanitizeHtml = (htmlString) => {
-        return htmlString.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("START_QUOTE", '<div class="quote">').replaceAll("END_QUOTE", '</div>');
-    };
+
+    // Рендер функция
 
     const renderComments = () => {
+        
+        const inputFormElement = document.querySelector(".add-form");
+        const loadingFormElement = document.querySelector(".loading");
+
+        loadingFormElement.classList.remove("display-flex");
+        inputFormElement.classList.remove("display-hidden");
 
         const commentsHTML = comments.map((comment, index) => {
-            
-            const safeName = sanitizeHtml(comment.name);
-            const safeComment = sanitizeHtml(comment.comment);
 
-            return `<li class="comment" data-index="${index}">
+            const date = comment.date;
+            const correctDate = new Date(comment.date).toLocaleString('ru-RU', { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).replace(',', '');
+
+
+            return `<li class="comment" data-id="${comment.id}">
                     <div class="comment-header">
-                        <div>${safeName}</div>
-                        <div>${comment.date}</div>
+                        <div>${comment.name}</div>
+                        <div class="comment-date">${correctDate}</div>
                     </div>
                     <div class="comment-body">
-                        <div class="comment-text" data-index="${index}">
-                            ${safeComment}
-                        </div>
+                        <div class="comment-text" data-id="${comment.id}">
+                            ${comment.text}
+                        </div> 
                     </div>
                     <div class="comment-footer">
                         <div class="likes">
-                            <span class="likes-counter">${comment.likesCounter}</span>
-                            <button data-index="${index}" class="like-button ${comment.likes ? '-active-like' : ''}"></button>
+                            <span class="likes-counter">${comment.likes}</span>
+                            <button data-index="${index}" class="like-button ${comment.isLiked ? '-active-like' : ''}"></button>
                         </div>
                     </div>
                         <div class="edit-form-row">
                             <button class="button-edit-comment" data-index="${index}">Редактировать</button>
-                        </div>
-                </li>`
+                            </div>
+                            </li>`
         }).join("");
+
 
         listElement.innerHTML = commentsHTML;
         initButtonEditCommentListener();
