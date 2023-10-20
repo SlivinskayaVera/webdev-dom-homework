@@ -50,11 +50,14 @@
     const getFetchResponse = () => {
         loadingCommentsElement.classList.add("display-flex");
 
-        fetch('https://wedev-api.sky.pro/api/v1/slivaaa/comments', {
+        return fetch('https://wedev-api.sky.pro/api/v1/slivaaa/comments', {
             method: 'GET',
         })
             .then((response) => {
-                return response.json()
+                if (response.status === 200) {
+                    return response.json()
+                }
+                else { throw new Error('Нет соединения') }
             })
             .then((responseComments) => {
                 const appComments = responseComments.comments.map((comment) => {
@@ -72,6 +75,9 @@
             .then((data) => {
                 loadingCommentsElement.classList.remove("display-flex");
             })
+            .catch((error) => {
+                alert('Что-то пошло не так, скорей всего нет соединения с интернетом, попробуйте повторить позже')
+            })
     };
 
     getFetchResponse();
@@ -82,6 +88,7 @@
             body: JSON.stringify({
                 text: textUser,
                 name: nameUser,
+                forceError: true
             })
         })
     };
@@ -102,6 +109,43 @@
         return htmlString.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("START_QUOTE", '<div class="quote">').replaceAll("END_QUOTE", '</div>');
     };
 
+    const postComment = (textUser, nameUser) => {
+        addTodo(textUser, nameUser)
+            .then((response) => {
+
+                if (response.status === 400) {
+                    throw new Error('Короткий комментарий или имя');
+                } else if (response.status === 500) {
+                    throw new Error('Сервер сломался');
+                }
+
+                getFetchResponse();
+
+                inputNameElement.value = "";
+                inputTextElement.value = "";
+
+            }).catch((error) => {
+                loadingFormElement.classList.remove("display-flex");
+                inputFormElement.classList.remove("display-hidden");
+
+                if (error.message === "Короткий комментарий или имя") {
+                    alert('Вы ввели слишком короткое имя или комментарий, попробуйте еще раз');
+                    return;
+                }
+
+                else if (error.message === 'Сервер сломался') {
+
+                    postComment(textUser, nameUser);
+                    console.log('пробую отправить запрос на сервер');
+                }
+
+                else (
+                    alert('Что-то пошло не так, скорей всего нет соединения с интернетом, попробуйте повторить позже')
+                )
+            });
+    }
+
+
 
 
 
@@ -114,12 +158,8 @@
         loadingFormElement.classList.add("display-flex");
         inputFormElement.classList.add("display-hidden");
 
-        addTodo(textUser, nameUser).then((response) => {
-            getFetchResponse();
-        });
+        postComment(textUser, nameUser)
 
-        inputNameElement.value = "";
-        inputTextElement.value = "";
     };
 
 
@@ -187,12 +227,12 @@
                     if (!comment.isLiked) {
                         comment.isLiked = true;
                         comment.likes += 1;
-    
+
                     } else {
                         comment.isLiked = false;
                         comment.likes -= 1;
                     }
-                buttonLikeElement.classList.remove("-loading-like");
+                    buttonLikeElement.classList.remove("-loading-like");
 
                     renderComments();
                 });
