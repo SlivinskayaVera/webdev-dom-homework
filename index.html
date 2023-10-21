@@ -22,7 +22,7 @@
             <input id="input-name" type="text" class="add-form-name" placeholder="Введите ваше имя" />
             <textarea class="add-form-text" placeholder="Введите ваш комментарий" rows="4"></textarea>
             <div class="add-form-row">
-                <button class="add-form-button">Написать</button>
+                <button class="add-form-button" disabled="true">Написать</button>
             </div>
             <div class="del-form-row">
                 <button class="del-form-button" style="margin-left: 10px;">Удалить последний комментарий</button>
@@ -46,7 +46,6 @@
 
 
     let comments = [];
-    buttonElement.disabled = true;
 
 
     const getFetchResponse = () => {
@@ -58,17 +57,22 @@
             .then((response) => {
                 if (response.status === 200) {
                     return response.json()
+                } else if (response.status === 500) {
+                    throw new Error('Сервер сломался');
                 }
                 else { throw new Error('Нет соединения') }
             })
             .then((responseComments) => {
                 const appComments = responseComments.comments.map((comment) => {
+                    console.log(comment);
                     return {
+                        id: comment.id,
                         name: comment.author.name,
                         date: new Date(comment.date),
                         text: comment.text,
                         likes: comment.likes,
                         isLiked: false,
+                        isEditor: false
                     };
                 });
                 comments = appComments;
@@ -78,6 +82,9 @@
                 loadingCommentsElement.classList.remove("display-flex");
             })
             .catch((error) => {
+                if (error.message === 'Сервер сломался') {
+                    alert('Сервер сломался, попробуй позже');
+                }
                 alert('Что-то пошло не так, скорей всего нет соединения с интернетом, попробуйте повторить позже')
             })
     };
@@ -248,7 +255,7 @@
                 event.stopPropagation();
 
                 const index = buttonEditCommentElement.dataset.index;
-                // comments[index].isEditor = true;
+                comments[index].isEditor = true;
 
                 if (buttonEditCommentElement.textContent === 'Редактировать') {
                     const commentElement = document.querySelectorAll('.comment-body')[index];
@@ -285,9 +292,10 @@
 
         for (const comment of commentsList) {
             comment.addEventListener('click', () => {
-                const index = comment.dataset.id;
-                // if (comments[index].isEditor === true) return;
-                inputTextElement.value = `START_QUOTE ${comments[index].name}: ${comments[index].comment} END_QUOTE`;
+                const index = comment.dataset.index;
+                if (comments[index].isEditor === true) return;
+                console.log(comment);
+                inputTextElement.value = `START_QUOTE ${comments[index].name}: ${comments[index].text} END_QUOTE`;
             })
         }
     }
@@ -307,7 +315,7 @@
             const correctDate = new Date(comment.date).toLocaleString('ru-RU', { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).replace(',', '');
 
 
-            return `<li class="comment" data-id="${comment.id}">
+            return `<li class="comment" data-index="${index}">
                     <div class="comment-header">
                         <div>${comment.name}</div>
                         <div class="comment-date">${correctDate}</div>
