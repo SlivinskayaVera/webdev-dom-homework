@@ -46,6 +46,8 @@
 
 
     let comments = [];
+    buttonElement.disabled = true;
+
 
     const getFetchResponse = () => {
         loadingCommentsElement.classList.add("display-flex");
@@ -82,6 +84,19 @@
 
     getFetchResponse();
 
+
+
+    // Добавление нового коммента
+
+    buttonElement.addEventListener("click", () => {
+        addNewComment();
+        buttonElement.disabled = true;
+    });
+
+    const sanitizeHtml = (htmlString) => {
+        return htmlString.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("START_QUOTE", '<div class="quote">').replaceAll("END_QUOTE", '</div>');
+    };
+
     const addTodo = (textUser, nameUser) => {
         return fetch('https://wedev-api.sky.pro/api/v1/slivaaa/comments', {
             method: 'POST',
@@ -91,22 +106,6 @@
                 forceError: true
             })
         })
-    };
-
-
-    buttonElement.disabled = true;
-
-    document.addEventListener("input", () => {
-        if (inputNameElement.value !== "" && inputTextElement.value !== "") {
-            buttonElement.disabled = false;
-        } else {
-            buttonElement.disabled = true;
-        }
-    });
-
-
-    const sanitizeHtml = (htmlString) => {
-        return htmlString.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("START_QUOTE", '<div class="quote">').replaceAll("END_QUOTE", '</div>');
     };
 
     const postComment = (textUser, nameUser) => {
@@ -143,13 +142,7 @@
                     alert('Что-то пошло не так, скорей всего нет соединения с интернетом, попробуйте повторить позже')
                 )
             });
-    }
-
-
-
-
-
-    // Добавление нового коммента
+    };
 
     const addNewComment = () => {
         const nameUser = sanitizeHtml(inputNameElement.value);
@@ -158,16 +151,8 @@
         loadingFormElement.classList.add("display-flex");
         inputFormElement.classList.add("display-hidden");
 
-        postComment(textUser, nameUser)
-
+        postComment(textUser, nameUser);
     };
-
-
-    buttonElement.addEventListener("click", () => {
-        addNewComment();
-        buttonElement.disabled = true;
-    })
-
 
 
     // Удаление последнего коммента
@@ -179,7 +164,7 @@
 
 
 
-    // Обработчики для Enter 
+    // Обработчики для кнопки Написать
 
     inputTextElement.addEventListener("keyup", (enter) => {
 
@@ -196,6 +181,14 @@
             buttonElement.disabled = true;
         }
     })
+
+    document.addEventListener("input", () => {
+        if (inputNameElement.value !== "" && inputTextElement.value !== "") {
+            buttonElement.disabled = false;
+        } else {
+            buttonElement.disabled = true;
+        }
+    });
 
 
 
@@ -311,7 +304,6 @@
 
         const commentsHTML = comments.map((comment, index) => {
 
-            const date = comment.date;
             const correctDate = new Date(comment.date).toLocaleString('ru-RU', { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).replace(',', '');
 
 
