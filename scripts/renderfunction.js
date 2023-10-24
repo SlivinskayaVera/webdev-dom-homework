@@ -1,9 +1,4 @@
-const renderComments = () => {
-
-    const listElement = document.querySelector(".comments");
-
-    loadingFormElement.classList.remove("display-flex");
-    inputFormElement.classList.remove("display-hidden");
+const renderComments = ({comments}) => {
 
     const commentsHTML = comments.map((comment, index) => {
 
@@ -31,13 +26,7 @@ const renderComments = () => {
                             </div>
                             </li>`
     }).join("");
-
-
-    listElement.innerHTML = commentsHTML;
-    initButtonEditCommentListener();
-    initReplyCommentListener();
-    initButtonLikeListeners();
-
+    return commentsHTML;
 };
 
 export { renderComments };

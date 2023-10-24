@@ -1,22 +1,23 @@
-const URL = 'https://wedev-api.sky.pro/api/v1/slivaa/comments';
+const URL = 'https://wedev-api.sky.pro/api/v1/sliva/comments';
 
 const getFetchResponse = () => {
     return fetch(URL, {
         method: 'GET',
     })
         .then((response) => {
-            if (response.status === 500) {
+            if (response.status === 200) {
+                return response.json()
+            } else if (response.status === 500) {
                 throw new Error('Сервер сломался');
             }
-            else {
-                return response.json()
-            }
+            else { throw new Error('Нет соединения') }
         })
 
 };
 
 
 const postCommentByFetch = ({textFromUser, nameFromUser}) => {
+
     return fetch(URL, {
         method: 'POST',
         body: JSON.stringify({
@@ -38,4 +39,3 @@ const postCommentByFetch = ({textFromUser, nameFromUser}) => {
 
 
 export { getFetchResponse, postCommentByFetch };
-

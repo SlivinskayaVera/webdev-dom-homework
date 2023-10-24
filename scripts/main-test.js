@@ -1,23 +1,20 @@
 import { sanitizeHtml } from './sanitizeHtml.js';
-import { renderComments } from './renderfunction.js';
 import { getFetchResponse, postCommentByFetch } from './api.js';
-
+import { renderComments } from './renderfunction.js';
 
 const inputNameElement = document.getElementById("input-name");
 const inputTextElement = document.querySelector(".add-form-text");
 const buttonElement = document.querySelector(".add-form-button");
 const buttonDelElement = document.querySelector(".del-form-button");
-const listElement = document.querySelector(".comments");
 const loadingCommentsElement = document.querySelector(".loading-comments");
 const buttonsLikeElement = document.querySelectorAll(".like-button");
 const inputFormElement = document.querySelector(".add-form");
 const loadingFormElement = document.querySelector(".loading");
 
-
 let comments = [];
 
+const getComments = () => {
 
-const getCommentsByFetchResponse = () => {
     loadingCommentsElement.classList.add("display-flex");
 
     getFetchResponse()
@@ -34,7 +31,7 @@ const getCommentsByFetchResponse = () => {
                 };
             });
             comments = appComments;
-            renderCommentsList();
+            renderComments();
         })
         .then(() => {
             loadingCommentsElement.classList.remove("display-flex");
@@ -47,9 +44,11 @@ const getCommentsByFetchResponse = () => {
         })
 };
 
-getCommentsByFetchResponse();
+getComments();
 
-// Добавление нового коммента
+
+
+// Добавление нового комментария
 
 buttonElement.addEventListener("click", () => {
     addNewComment();
@@ -62,13 +61,13 @@ const postComment = (textFromUser, nameFromUser) => {
     postCommentByFetch({textFromUser, nameFromUser})
         .then(() => {
 
-            getCommentsByFetchResponse();
+            getComments();
 
             inputNameElement.value = "";
             inputTextElement.value = "";
 
         }).catch((error) => {
-
+            
             loadingFormElement.classList.remove("display-flex");
             inputFormElement.classList.remove("display-hidden");
 
@@ -100,11 +99,11 @@ const addNewComment = () => {
 };
 
 
-// Удаление последнего коммента
+// Удаление последнего комментария
 
 buttonDelElement.addEventListener("click", () => {
     comments.pop();
-    renderCommentsList();
+    renderComments();
 });
 
 
@@ -139,7 +138,6 @@ document.addEventListener("input", () => {
 
 // Обработчик лайки
 
-
 function delay(interval = 300) {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -159,7 +157,7 @@ const initButtonLikeListeners = () => {
             let index = buttonLikeElement.dataset.index;
             buttonLikeElement.classList.add("-loading-like");
 
-            delay(2000).then(() => {
+            delay(1000).then(() => {
                 const comment = comments[index];
 
                 if (!comment.isLiked) {
@@ -172,17 +170,14 @@ const initButtonLikeListeners = () => {
                 }
                 buttonLikeElement.classList.remove("-loading-like");
 
-                renderCommentsList();
+                renderComments();
             });
         })
     }
 };
 
-initButtonLikeListeners();
 
-
-
-// Обработчик редактирования коммента
+// Обработчик редактирования комментария
 
 const initButtonEditCommentListener = () => {
     const buttonsEditCommentElement = document.querySelectorAll(".button-edit-comment");
@@ -199,9 +194,9 @@ const initButtonEditCommentListener = () => {
                 const commentElement = document.querySelectorAll('.comment-body')[index];
 
                 commentElement.innerHTML = `
-                <div class="edit-form">
-                    <textarea class="edit-form-text" rows="4">${comments[index].text}</textarea>
-                    </div>`;
+                    <div class="edit-form">
+                        <textarea class="edit-form-text" rows="4">${comments[index].text}</textarea>
+                        </div>`;
 
                 buttonEditCommentElement.textContent = 'Сохранить';
 
@@ -210,7 +205,7 @@ const initButtonEditCommentListener = () => {
 
                 if (inputTextElement.value !== "") {
                     comments[index].comment = inputTextElement.value;
-                    renderCommentsList();
+                    renderComments();
                 }
             }
         })
@@ -222,33 +217,21 @@ const initButtonEditCommentListener = () => {
 
 const initReplyCommentListener = () => {
     const commentsList = document.querySelectorAll('.comment');
+    const inputTextElement = document.querySelector('.add-form-text');
+
 
     for (const comment of commentsList) {
         comment.addEventListener('click', () => {
             const index = comment.dataset.index;
-
             if (comments[index].isEditor === true) return;
-
+            console.log(comment);
             inputTextElement.value = `START_QUOTE ${comments[index].name}: ${comments[index].text} END_QUOTE`;
         })
     }
-}
-
-
-// Рендер функция
-
-function renderCommentsList() {
-
-    loadingFormElement.classList.remove("display-flex");
-    inputFormElement.classList.remove("display-hidden");
-    
-    listElement.innerHTML = renderComments({ comments });
-
-    initButtonEditCommentListener();
-    initReplyCommentListener();
-    initButtonLikeListeners();
 };
 
-renderCommentsList();
 
-console.log("Modules work!");
+renderComments();
+
+console.log("It works?!");
+
