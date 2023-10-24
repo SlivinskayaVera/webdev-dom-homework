@@ -6,19 +6,18 @@ import { initReplyCommentListener } from './replyсomment.js';
 import { initButtonLikeListeners } from './buttonlike.js';
 
 
+const listElement = document.querySelector(".comments");
 const inputNameElement = document.getElementById("input-name");
 const inputTextElement = document.querySelector(".add-form-text");
 const buttonElement = document.querySelector(".add-form-button");
-const buttonDelElement = document.querySelector(".del-form-button");
-const listElement = document.querySelector(".comments");
 const loadingCommentsElement = document.querySelector(".loading-comments");
-const buttonsLikeElement = document.querySelectorAll(".like-button");
 const inputFormElement = document.querySelector(".add-form");
 const loadingFormElement = document.querySelector(".loading");
 
 
 let comments = [];
 
+// fetch запрос для массива комментариев
 
 const getCommentsByFetchResponse = () => {
     loadingCommentsElement.classList.add("display-flex");
@@ -36,6 +35,7 @@ const getCommentsByFetchResponse = () => {
                     isEditor: false
                 };
             });
+
             comments = appComments;
             renderCommentsList();
         })
@@ -52,13 +52,19 @@ const getCommentsByFetchResponse = () => {
 
 getCommentsByFetchResponse();
 
+
+
 // Добавление нового коммента
 
-buttonElement.addEventListener("click", () => {
-    addNewComment();
-    buttonElement.disabled = true;
-});
+const addNewComment = () => {
+    const nameUser = sanitizeHtml(inputNameElement.value);
+    const textUser = sanitizeHtml(inputTextElement.value);
 
+    loadingFormElement.classList.add("display-flex");
+    inputFormElement.classList.add("display-hidden");
+
+    postComment(textUser, nameUser);
+};
 
 const postComment = (textFromUser, nameFromUser) => {
 
@@ -92,24 +98,6 @@ const postComment = (textFromUser, nameFromUser) => {
         });
 };
 
-const addNewComment = () => {
-    const nameUser = sanitizeHtml(inputNameElement.value);
-    const textUser = sanitizeHtml(inputTextElement.value);
-
-    loadingFormElement.classList.add("display-flex");
-    inputFormElement.classList.add("display-hidden");
-
-    postComment(textUser, nameUser);
-};
-
-
-// Удаление последнего коммента
-
-buttonDelElement.addEventListener("click", () => {
-    comments.pop();
-    renderCommentsList();
-});
-
 
 
 // Обработчики для кнопки Написать
@@ -129,6 +117,11 @@ inputNameElement.addEventListener("keyup", (enter) => {
         buttonElement.disabled = true;
     }
 })
+
+buttonElement.addEventListener("click", () => {
+    addNewComment();
+    buttonElement.disabled = true;
+});
 
 document.addEventListener("input", () => {
     if (inputNameElement.value !== "" && inputTextElement.value !== "") {
