@@ -1,6 +1,9 @@
 import { sanitizeHtml } from './sanitizeHtml.js';
 import { renderComments } from './renderfunction.js';
 import { getFetchResponse, postCommentByFetch } from './api.js';
+import { initButtonEditCommentListener } from './editcomment.js';
+import { initReplyCommentListener } from './replyсomment.js';
+import { initButtonLikeListeners } from './buttonlike.js';
 
 
 const inputNameElement = document.getElementById("input-name");
@@ -59,7 +62,7 @@ buttonElement.addEventListener("click", () => {
 
 const postComment = (textFromUser, nameFromUser) => {
 
-    postCommentByFetch({textFromUser, nameFromUser})
+    postCommentByFetch({ textFromUser, nameFromUser })
         .then(() => {
 
             getCommentsByFetchResponse();
@@ -136,112 +139,13 @@ document.addEventListener("input", () => {
 });
 
 
-
-// Обработчик лайки
-
-
-function delay(interval = 300) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve();
-        }, interval);
-    });
-}
-
-const initButtonLikeListeners = () => {
-    const buttonsLikeElement = document.querySelectorAll(".like-button");
-
-
-    for (const buttonLikeElement of buttonsLikeElement) {
-        buttonLikeElement.addEventListener("click", (event) => {
-            event.stopPropagation();
-
-            let index = buttonLikeElement.dataset.index;
-            buttonLikeElement.classList.add("-loading-like");
-
-            delay(2000).then(() => {
-                const comment = comments[index];
-
-                if (!comment.isLiked) {
-                    comment.isLiked = true;
-                    comment.likes += 1;
-
-                } else {
-                    comment.isLiked = false;
-                    comment.likes -= 1;
-                }
-                buttonLikeElement.classList.remove("-loading-like");
-
-                renderCommentsList();
-            });
-        })
-    }
-};
-
-initButtonLikeListeners();
-
-
-
-// Обработчик редактирования коммента
-
-const initButtonEditCommentListener = () => {
-    const buttonsEditCommentElement = document.querySelectorAll(".button-edit-comment");
-
-    for (const buttonEditCommentElement of buttonsEditCommentElement) {
-        buttonEditCommentElement.addEventListener("click", (event) => {
-
-            event.stopPropagation();
-
-            const index = buttonEditCommentElement.dataset.index;
-            comments[index].isEditor = true;
-
-            if (buttonEditCommentElement.textContent === 'Редактировать') {
-                const commentElement = document.querySelectorAll('.comment-body')[index];
-
-                commentElement.innerHTML = `
-                <div class="edit-form">
-                    <textarea class="edit-form-text" rows="4">${comments[index].text}</textarea>
-                    </div>`;
-
-                buttonEditCommentElement.textContent = 'Сохранить';
-
-            } else {
-                const inputTextElement = document.querySelector(".edit-form-text");
-
-                if (inputTextElement.value !== "") {
-                    comments[index].comment = inputTextElement.value;
-                    renderCommentsList();
-                }
-            }
-        })
-    }
-};
-
-
-// Обработчик ответа на комментарий
-
-const initReplyCommentListener = () => {
-    const commentsList = document.querySelectorAll('.comment');
-
-    for (const comment of commentsList) {
-        comment.addEventListener('click', () => {
-            const index = comment.dataset.index;
-
-            if (comments[index].isEditor === true) return;
-
-            inputTextElement.value = `START_QUOTE ${comments[index].name}: ${comments[index].text} END_QUOTE`;
-        })
-    }
-}
-
-
 // Рендер функция
 
 function renderCommentsList() {
 
     loadingFormElement.classList.remove("display-flex");
     inputFormElement.classList.remove("display-hidden");
-    
+
     listElement.innerHTML = renderComments({ comments });
 
     initButtonEditCommentListener();
@@ -250,5 +154,7 @@ function renderCommentsList() {
 };
 
 renderCommentsList();
+
+export { comments, renderCommentsList };
 
 console.log("Modules work!");
