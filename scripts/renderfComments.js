@@ -21,11 +21,9 @@ const renderComments = ({comments}) => {
                             <button data-index="${index}" class="like-button ${comment.isLiked ? '-active-like' : ''}"></button>
                         </div>
                     </div>
-                        <div class="edit-form-row">
-                            <button class="button-edit-comment" data-index="${index}">Редактировать</button>
-                            </div>
-                            </li>`
+                    </li>`
     }).join("");
+
     return commentsHTML;
 };
 

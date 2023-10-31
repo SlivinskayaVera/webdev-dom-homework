@@ -1,15 +1,15 @@
 import { sanitizeHtml } from './sanitizeHtml.js';
-import { renderComments } from './renderfunction.js';
-import { getFetchResponse, postCommentByFetch } from './api.js';
+import { renderComments } from './renderfComments.js';
+import { getFetchResponse, postCommentByFetch, enterUser } from './api.js';
 import { initButtonEditCommentListener } from './editcomment.js';
 import { initReplyCommentListener } from './replyсomment.js';
 import { initButtonLikeListeners } from './buttonlike.js';
+import { renderPage } from './renderPage.js'
 
 
 const listElement = document.querySelector(".comments");
 const inputNameElement = document.getElementById("input-name");
 const inputTextElement = document.querySelector(".add-form-text");
-const buttonElement = document.querySelector(".add-form-button");
 const loadingCommentsElement = document.querySelector(".loading-comments");
 const inputFormElement = document.querySelector(".add-form");
 const loadingFormElement = document.querySelector(".loading");
@@ -99,36 +99,43 @@ const postComment = (textFromUser, nameFromUser) => {
 };
 
 
+const buttonForAuthorization = document.querySelector('.authorizationButton');
+const appHtml = document.querySelector('.container');
 
-// Обработчики для кнопки Написать
+buttonForAuthorization.addEventListener('click', () => {
 
-inputTextElement.addEventListener("keyup", (enter) => {
+    const enterForm = `
+        <div class="enter-form">
+            <h3 class="enter-form-header">Форма входа</h3>
+            <input id="enterLogin" type="text" class="enter-form-input" placeholder="Введите логин" />
+            <input id="enterPassword" type="text" class="enter-form-input" placeholder="Введите пароль" />
 
-    if (enter.code === 'Enter' && inputNameElement.value !== "" && inputTextElement.value !== "") {
-        addNewComment();
-        buttonElement.disabled = true;
-    }
-});
+            <button class="enter-form-button">Войти</button>
+            <a class="registerButton" href="#">Зарегистрироваться</a>
+        </div>`;
+    appHtml.innerHTML = enterForm;    
 
-inputNameElement.addEventListener("keyup", (enter) => {
+    const enterFormButton = document.querySelector('.enter-form-button');
+    
+    enterFormButton.addEventListener('click', () => {
+        const enterLogin = document.getElementById('enterLogin');
+        const enterPassword = document.getElementById('enterPassword');
+        let userdata;
 
-    if (enter.code === 'Enter' && inputNameElement.value !== "" && inputTextElement.value !== "") {
-        addNewComment();
-        buttonElement.disabled = true;
-    }
-})
-
-buttonElement.addEventListener("click", () => {
-    addNewComment();
-    buttonElement.disabled = true;
-});
-
-document.addEventListener("input", () => {
-    if (inputNameElement.value !== "" && inputTextElement.value !== "") {
-        buttonElement.disabled = false;
-    } else {
-        buttonElement.disabled = true;
-    }
+        enterUser({
+            login: enterLogin.value,
+            password: enterPassword.value,
+        })
+        .then((responseData) => {
+            return userdata = responseData.user;
+        })
+        .then(() => {
+            appHtml.innerHTML = renderPage({comments, userdata});  
+            console.log(renderPage({comments}));  
+            console.log(userdata);
+        });
+    
+    });
 });
 
 
@@ -136,8 +143,8 @@ document.addEventListener("input", () => {
 
 function renderCommentsList() {
 
-    loadingFormElement.classList.remove("display-flex");
-    inputFormElement.classList.remove("display-hidden");
+    // loadingFormElement.classList.remove("display-flex");
+    // inputFormElement.classList.remove("display-hidden");
 
     listElement.innerHTML = renderComments({ comments });
 
@@ -148,6 +155,6 @@ function renderCommentsList() {
 
 renderCommentsList();
 
-export { comments, renderCommentsList };
+export { comments, renderCommentsList, getCommentsByFetchResponse };
 
 console.log("Modules work!");
