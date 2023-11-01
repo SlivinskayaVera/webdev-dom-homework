@@ -1,5 +1,5 @@
 import { registerUser } from './api.js';
-import { drowEnterPage } from './main.js'
+import { drawEnterPage } from './main.js'
 
 const newUser = ({ comments, userData, appHtml }) => {
     const registerName = document.getElementById('registerName');
@@ -15,7 +15,7 @@ const newUser = ({ comments, userData, appHtml }) => {
             return userData = responseData.user;
         })
         .then(() => {
-            drowEnterPage();
+            drawEnterPage();
         })
         .catch((error) => {
             if (error.message === 'пользователь с таким логином уже существует') {

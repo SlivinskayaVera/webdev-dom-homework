@@ -70,14 +70,14 @@ const initButtonRegisterListener = () => {
     const registerFormButton = document.querySelector('.register-form-button');
 
     registerFormButton.addEventListener('click', () => {
-        newUser({});
+        newUser();
     })
 
 }
 
 // рисует форму регистрации 
 
-const drowRegistrationPage = () => {
+const drawRegistrationPage = () => {
 
     const registerForm = `
     <div class="register-form">
@@ -97,14 +97,14 @@ const drowRegistrationPage = () => {
     const enterFormButton = document.querySelector('.enter-button');
 
     enterFormButton.addEventListener('click', () => {
-        drowEnterPage();
+        drawEnterPage();
     })
 
 }
 
 // рисует форму входа
 
-const drowEnterPage = () => {
+const drawEnterPage = () => {
 
     const enterFormHTML = `
         <div class="enter-form">
@@ -124,13 +124,13 @@ const drowEnterPage = () => {
     const registerButton = document.querySelector('.register-button');
 
     registerButton.addEventListener('click', () => {
-        drowRegistrationPage();
+        drawRegistrationPage();
     })
 }
 
 // ссылка на авторизацию 
 buttonForAuthorization.addEventListener('click', () => {
-    drowEnterPage();
+    drawEnterPage();
 });
 
 
@@ -153,6 +153,6 @@ function renderCommentsList() {
 
 renderCommentsList();
 
-export { comments, renderCommentsList, getCommentsByFetchResponse, drowEnterPage };
+export { comments, renderCommentsList, getCommentsByFetchResponse, drawEnterPage };
 
 console.log("Modules work!");
