@@ -60,7 +60,7 @@ const initButtonEnterListener = () => {
     const enterFormButton = document.querySelector('.enter-form-button');
 
     enterFormButton.addEventListener('click', () => {
-        enterByLogin({ comments, userData, appHtml })
+        enterByLogin({ comments, userData });
     });
 }
 
@@ -145,7 +145,6 @@ function renderCommentsList() {
 
     listElement.innerHTML = renderComments({ comments });
 
-    initButtonEditCommentListener();
     initReplyCommentListener();
     initButtonLikeListeners();
 

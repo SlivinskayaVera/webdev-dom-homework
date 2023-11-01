@@ -1,11 +1,16 @@
 import { enterUser } from './api.js';
 import { renderPage } from './renderPage.js';
+import { initButtonLikeListeners } from './buttonlike.js';
+import { initButtonSendCommentListener } from './buttonElementListeners.js';
+import { initReplyCommentListener } from './replyсomment.js';
 
 
-const enterByLogin = ({comments, userData, appHtml}) => {
+
+const enterByLogin = ({ comments, userData }) => {
 
     const enterLogin = document.getElementById('enterLogin');
     const enterPassword = document.getElementById('enterPassword');
+
 
     if (enterLogin !== '' && enterPassword !== '') {
         enterUser({
@@ -16,7 +21,12 @@ const enterByLogin = ({comments, userData, appHtml}) => {
                 return userData = responseData.user;
             })
             .then(() => {
-                appHtml.innerHTML = renderPage({ comments, userData });
+                renderPage({ comments, userData });
+                const token = userData.token;
+                initButtonSendCommentListener({ token });
+                initReplyCommentListener();
+                initButtonLikeListeners();
+                
             })
             .catch((error) => {
                 if (error.message === 'передан неправильный логин или пароль') {
@@ -26,4 +36,4 @@ const enterByLogin = ({comments, userData, appHtml}) => {
     }
 }
 
-export {enterByLogin}
+export { enterByLogin }

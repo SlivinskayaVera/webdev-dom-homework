@@ -1,9 +1,4 @@
-import { initButtonSendCommentListener } from './buttonElementListeners.js';
 import { renderComments } from './renderfComments.js';
-import { initButtonEditCommentListener } from './editcomment.js';
-import { initReplyCommentListener } from './replyсomment.js';
-import { initButtonLikeListeners } from './buttonlike.js';
-
 
 
 const renderPage = ({ comments, userData }) => {
@@ -27,13 +22,8 @@ const renderPage = ({ comments, userData }) => {
                 <button class="add-form-button">Написать</button>
             </div>
         </div>`;
-
-    initButtonEditCommentListener();
-    initReplyCommentListener();
-    initButtonLikeListeners();
-    initButtonSendCommentListener({ token });
-
-    return appHtml.innerHTML = renderPageHTML;
-};
+        
+        return appHtml.innerHTML = renderPageHTML;
+    };
 
 export { renderPage };
