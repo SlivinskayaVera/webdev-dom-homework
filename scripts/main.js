@@ -1,21 +1,22 @@
-import { sanitizeHtml } from './sanitizeHtml.js';
 import { renderComments } from './renderfComments.js';
-import { getFetchResponse, postCommentByFetch, enterUser } from './api.js';
+import { getFetchResponse, postCommentByFetch, enterUser, registerUser } from './api.js';
 import { initButtonEditCommentListener } from './editcomment.js';
 import { initReplyCommentListener } from './replyсomment.js';
 import { initButtonLikeListeners } from './buttonlike.js';
-import { renderPage } from './renderPage.js'
+import { enterByLogin } from './enterByLogin.js';
+import { newUser } from './registrationUser.js'
 
 
 const listElement = document.querySelector(".comments");
-const inputNameElement = document.getElementById("input-name");
-const inputTextElement = document.querySelector(".add-form-text");
 const loadingCommentsElement = document.querySelector(".loading-comments");
 const inputFormElement = document.querySelector(".add-form");
 const loadingFormElement = document.querySelector(".loading");
+const buttonForAuthorization = document.querySelector('.authorizationButton');
+const appHtml = document.querySelector('.container');
 
 
 let comments = [];
+let userData;
 
 // fetch запрос для массива комментариев
 
@@ -54,107 +55,104 @@ getCommentsByFetchResponse();
 
 
 
-// Добавление нового коммента
+// кнопка войти: иницализация и обработчик на вход в учетку
+const initButtonEnterListener = () => {
+    const enterFormButton = document.querySelector('.enter-form-button');
 
-const addNewComment = () => {
-    const nameUser = sanitizeHtml(inputNameElement.value);
-    const textUser = sanitizeHtml(inputTextElement.value);
+    enterFormButton.addEventListener('click', () => {
+        enterByLogin({ comments, userData, appHtml })
+    });
+}
 
-    loadingFormElement.classList.add("display-flex");
-    inputFormElement.classList.add("display-hidden");
+// кнопка регистрации 
 
-    postComment(textUser, nameUser);
-};
+const initButtonRegisterListener = () => {
+    const registerFormButton = document.querySelector('.register-form-button');
 
-const postComment = (textFromUser, nameFromUser) => {
+    registerFormButton.addEventListener('click', () => {
+        newUser({});
+    })
 
-    postCommentByFetch({ textFromUser, nameFromUser })
-        .then(() => {
+}
 
-            getCommentsByFetchResponse();
+// рисует форму регистрации 
 
-            inputNameElement.value = "";
-            inputTextElement.value = "";
+const drowRegistrationPage = () => {
 
-        }).catch((error) => {
+    const registerForm = `
+    <div class="register-form">
+        <h3 class="register-form-header">Форма регистрации</h3>
+        <input id="registerName" type="text" class="register-form-input" placeholder="Введите имя" />
+        <input id="registerLogin" type="text" class="register-form-input" placeholder="Введите логин" />
+        <input id="registerPassword" type="password" class="register-form-input" placeholder="Введите пароль" />
 
-            loadingFormElement.classList.remove("display-flex");
-            inputFormElement.classList.remove("display-hidden");
+        <button class="register-form-button">Зарегистрироваться</button>
+        <a class="enter-button" href="#">Войти</a>
+    </div>`;
 
-            if (error.message === "Короткий комментарий или имя") {
-                alert('Вы ввели слишком короткое имя или комментарий, попробуйте еще раз');
-                return;
-            }
+    appHtml.innerHTML = registerForm;
 
-            else if (error.message === 'Сервер сломался') {
+    initButtonRegisterListener();
 
-                postComment(textFromUser, nameFromUser);
-                console.log('пробую отправить запрос на сервер');
-            }
+    const enterFormButton = document.querySelector('.enter-button');
 
-            else (
-                alert('Что-то пошло не так, скорей всего нет соединения с интернетом, попробуйте повторить позже')
-            )
-        });
-};
+    enterFormButton.addEventListener('click', () => {
+        drowEnterPage();
+    })
 
+}
 
-const buttonForAuthorization = document.querySelector('.authorizationButton');
-const appHtml = document.querySelector('.container');
+// рисует форму входа
 
-buttonForAuthorization.addEventListener('click', () => {
+const drowEnterPage = () => {
 
-    const enterForm = `
+    const enterFormHTML = `
         <div class="enter-form">
             <h3 class="enter-form-header">Форма входа</h3>
             <input id="enterLogin" type="text" class="enter-form-input" placeholder="Введите логин" />
-            <input id="enterPassword" type="text" class="enter-form-input" placeholder="Введите пароль" />
+            <input id="enterPassword" type="password" class="enter-form-input" placeholder="Введите пароль" />
 
             <button class="enter-form-button">Войти</button>
-            <a class="registerButton" href="#">Зарегистрироваться</a>
+            <a class="register-button" href="#">Зарегистрироваться</a>
         </div>`;
-    appHtml.innerHTML = enterForm;    
 
-    const enterFormButton = document.querySelector('.enter-form-button');
-    
-    enterFormButton.addEventListener('click', () => {
-        const enterLogin = document.getElementById('enterLogin');
-        const enterPassword = document.getElementById('enterPassword');
-        let userdata;
+    appHtml.innerHTML = enterFormHTML;
 
-        enterUser({
-            login: enterLogin.value,
-            password: enterPassword.value,
-        })
-        .then((responseData) => {
-            return userdata = responseData.user;
-        })
-        .then(() => {
-            appHtml.innerHTML = renderPage({comments, userdata});  
-            console.log(renderPage({comments}));  
-            console.log(userdata);
-        });
-    
-    });
+    initButtonEnterListener();
+
+
+    const registerButton = document.querySelector('.register-button');
+
+    registerButton.addEventListener('click', () => {
+        drowRegistrationPage();
+    })
+}
+
+// ссылка на авторизацию 
+buttonForAuthorization.addEventListener('click', () => {
+    drowEnterPage();
 });
 
 
-// Рендер функция
+
+// Рендер комментов
 
 function renderCommentsList() {
 
-    // loadingFormElement.classList.remove("display-flex");
-    // inputFormElement.classList.remove("display-hidden");
+    loadingFormElement.classList.remove("display-flex");
+    inputFormElement.classList.remove("display-hidden");
+
 
     listElement.innerHTML = renderComments({ comments });
 
     initButtonEditCommentListener();
     initReplyCommentListener();
     initButtonLikeListeners();
+
 };
 
 renderCommentsList();
 
-export { comments, renderCommentsList, getCommentsByFetchResponse };
+export { comments, renderCommentsList, getCommentsByFetchResponse, drowEnterPage };
 
 console.log("Modules work!");

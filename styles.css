@@ -244,7 +244,7 @@ body {
   opacity: 0.9;
 }
 
-.registerButton {
+.register-button {
   align-self: center;
   font-family: Helvetica;
   color: #ffffff;
@@ -294,7 +294,7 @@ body {
   opacity: 0.9;
 }
 
-.enterButton {
+.enter-button {
   align-self: center;
   font-family: Helvetica;
   color: #ffffff;

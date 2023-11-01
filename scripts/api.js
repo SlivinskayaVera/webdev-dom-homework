@@ -1,4 +1,4 @@
-const URL = 'https://wedev-api.sky.pro/api/v1/sliva/comments';
+const URL = 'https://wedev-api.sky.pro/api/v2/sliva/comments';
 const apiUsers = 'https://wedev-api.sky.pro/api/user';
 
 
@@ -18,7 +18,7 @@ const getFetchResponse = () => {
 };
 
 
-const postCommentByFetch = ({textFromUser, nameFromUser}) => {
+const postCommentByFetch = ({textFromUser, nameFromUser, token}) => {
 
     return fetch(URL, {
         method: 'POST',
@@ -26,7 +26,10 @@ const postCommentByFetch = ({textFromUser, nameFromUser}) => {
             text: textFromUser,
             name: nameFromUser,
             forceError: true
-        })
+        }),
+        headers: {
+            Authorization: `Bearer ${token}`,
+          }
     })
     .then((response) => {
 
@@ -40,7 +43,7 @@ const postCommentByFetch = ({textFromUser, nameFromUser}) => {
 };
 
 
-const registerUser = () => {
+const registerUser = ({login, password, name}) => {
     return fetch(apiUsers, {
         method: 'POST',
         body: JSON.stringify({
@@ -48,6 +51,13 @@ const registerUser = () => {
             name,
             password
         })
+    })
+    .then((response) => {
+
+        if (response.status === 400) {
+            throw new Error('пользователь с таким логином уже существует');
+        }
+        return response.json();
     })
 };
 
@@ -60,9 +70,13 @@ const enterUser = ({login, password}) => {
         })
     })
     .then((response) => {
+
+        if (response.status === 400) {
+            throw new Error('передан неправильный логин или пароль');
+        }
         return response.json();
     })
 }
 
 
-export { getFetchResponse, postCommentByFetch, enterUser };
+export { getFetchResponse, postCommentByFetch, enterUser, registerUser };

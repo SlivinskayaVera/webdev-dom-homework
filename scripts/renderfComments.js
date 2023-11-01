@@ -4,7 +4,6 @@ const renderComments = ({comments}) => {
 
         const correctDate = new Date(comment.date).toLocaleString('ru-RU', { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).replace(',', '');
 
-
         return `<li class="comment" data-index="${index}">
                     <div class="comment-header">
                         <div>${comment.name}</div>

@@ -21,18 +21,13 @@
         <div class="authorization">
             <p>Чтобы добавить комментарий, <a class="authorizationButton" href="#">авторизуйтесь</a> .</p>
         </div>
-
-        <div class="register-form">
-            <h3 class="register-form-header">Форма регистрации</h3>
-            <input id="registerName" type="text" class="register-form-input" placeholder="Введите имя" />
-            <input id="registerLogin" type="text" class="register-form-input" placeholder="Введите логин" />
-            <input id="registerPassword" type="text" class="register-form-input" placeholder="Введите пароль" />
-
-            <button class="register-form-button" disabled="true">Зарегистрироваться</button>
-            <a class="enterButton" href="#">Войти</a>
+        <div class="add-form" style="display: none;">
+            <input id="input-name" type="text" class="add-form-name" disabled='true'/>
+            <textarea class="add-form-text" placeholder="Введите ваш комментарий" rows="4"></textarea>
+            <div class="add-form-row">
+                <button class="add-form-button" disabled="true">Написать</button>
+            </div>
         </div>
-
-
     </div>
     <script type="module" src="/scripts/main.js"></script>
 </body>
