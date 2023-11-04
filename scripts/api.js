@@ -51,6 +51,19 @@ const delCommentByFetch = ({ID, token}) => {
 };
 
 
+const addLikeByFetch = ({ID, token}) => {
+
+    return fetch(`${apiComments}/${ID}/toggle-like`, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${token}`,
+          }
+    })
+    .then((response) => {
+        return response.json();
+    })
+}; 
+
 const registerUser = ({login, password, name}) => {
     return fetch(apiUsers, {
         method: 'POST',
@@ -87,4 +100,4 @@ const enterUser = ({login, password}) => {
 }
 
 
-export { getFetchResponse, postCommentByFetch, enterUser, registerUser, delCommentByFetch };
+export { getFetchResponse, postCommentByFetch, enterUser, registerUser, delCommentByFetch, addLikeByFetch };

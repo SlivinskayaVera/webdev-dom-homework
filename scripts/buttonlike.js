@@ -1,12 +1,6 @@
-import { renderPage } from './renderPage.js'
+import { getCommentsByFetchResponse } from './getCommentsRenderPage.js';
+import { addLikeByFetch } from './api.js';
 
-function delay(interval = 300) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve();
-        }, interval);
-    });
-}
 
 export const initButtonLikeListeners = ({ comments, token, userData }) => {
 
@@ -14,33 +8,25 @@ export const initButtonLikeListeners = ({ comments, token, userData }) => {
 
     for (const buttonLikeElement of buttonsLikeElement) {
         buttonLikeElement.addEventListener("click", (event) => {
+            
             event.stopPropagation();
-
-            let index = buttonLikeElement.dataset.index;
-            buttonLikeElement.classList.add("-loading-like");
 
             if (!token) {
                 buttonLikeElement.classList.remove("-loading-like");
                 return
             }
 
-            delay(2000).then(() => {
-                const comment = comments[index];
+            buttonLikeElement.classList.add("-loading-like");
 
+            let index = buttonLikeElement.dataset.index;
+            const comment = comments[index];
+            const ID = comment.id;
 
-                if (!comment.isLiked) {
-                    comment.isLiked = true;
-                    comment.likes += 1;
-
-                } else {
-                    comment.isLiked = false;
-                    comment.likes -= 1;
-                }
-                
-                buttonLikeElement.classList.remove("-loading-like");
-
-                renderPage({ comments, token, userData });
-            });
-        })
+            addLikeByFetch({ ID, token })
+                .then(() => {
+                    getCommentsByFetchResponse({ comments, token, userData });
+                    buttonLikeElement.classList.remove("-loading-like");
+                })
+        });
     }
-};
+}

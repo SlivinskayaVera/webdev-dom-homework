@@ -9,6 +9,8 @@ export const initButtonDeleteListener = ({ comments, token, userData }) => {
 
         buttonDeleteElement.addEventListener("click", (event) => {
 
+            if (!token) return;
+
             event.stopPropagation();
 
             let index = buttonDeleteElement.dataset.index;

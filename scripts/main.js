@@ -13,6 +13,5 @@ getCommentsByFetchResponse({ comments });
 console.log("Modules work!");
 
 
-// добавить удаление коммента
 // добавить локал сторедж
 
