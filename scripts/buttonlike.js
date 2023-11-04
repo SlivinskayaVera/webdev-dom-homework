@@ -1,6 +1,13 @@
 import { getCommentsByFetchResponse } from './getCommentsRenderPage.js';
 import { addLikeByFetch } from './api.js';
 
+function delay(interval = 300) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve();
+        }, interval);
+    });
+}
 
 export const initButtonLikeListeners = ({ comments, token, userData }) => {
 
@@ -18,6 +25,7 @@ export const initButtonLikeListeners = ({ comments, token, userData }) => {
 
             buttonLikeElement.classList.add("-loading-like");
 
+            delay(1000).then(() => {
             let index = buttonLikeElement.dataset.index;
             const comment = comments[index];
             const ID = comment.id;
@@ -27,6 +35,7 @@ export const initButtonLikeListeners = ({ comments, token, userData }) => {
                     getCommentsByFetchResponse({ comments, token, userData });
                     buttonLikeElement.classList.remove("-loading-like");
                 })
+            })
         });
     }
 }

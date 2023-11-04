@@ -11,7 +11,6 @@ export const getCommentsByFetchResponse = ({comments, userData, token}) => {
         .then((responseComments) => {
             const appComments = responseComments.comments.map((comment) => {
 
-                console.log(comment.isLiked);
                 return {
                     id: comment.id,
                     name: comment.author.name,
