@@ -1,4 +1,4 @@
-const apiComments = 'https://wedev-api.sky.pro/api/v2/slivaaaaa/comments';
+const apiComments = 'https://wedev-api.sky.pro/api/v2/vera/comments';
 const apiUsers = 'https://wedev-api.sky.pro/api/user';
 
 

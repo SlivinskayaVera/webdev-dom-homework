@@ -1,7 +1,7 @@
 import { addNewComment } from './addNewComment.js'
 
 
-export const initButtonSendCommentListener = ({ token }) => {
+export const initButtonSendCommentListener = ({ token, userData }) => {
 
     const buttonElement = document.querySelector(".add-form-button");
     const inputTextElement = document.querySelector(".add-form-text");
@@ -12,7 +12,7 @@ export const initButtonSendCommentListener = ({ token }) => {
         if (enter.code === 'Enter' && inputTextElement.value !== "") {
             const commentFromInput = inputTextElement.value;
 
-            addNewComment({ token, commentFromInput });
+            addNewComment({ token, commentFromInput, userData });
             buttonElement.disabled = true;
         }
     });
@@ -30,7 +30,7 @@ export const initButtonSendCommentListener = ({ token }) => {
     buttonElement.addEventListener("click", () => {
         const commentFromInput = inputTextElement.value;
 
-        addNewComment({ token, commentFromInput });
+        addNewComment({ token, commentFromInput, userData });
         buttonElement.disabled = true;
     });
 

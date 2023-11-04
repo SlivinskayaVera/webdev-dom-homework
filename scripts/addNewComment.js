@@ -6,7 +6,7 @@ import { postCommentByFetch } from './api.js';
 import { comments } from './main.js'
 
 
-export const addNewComment = ({ token, commentFromInput }) => {
+export const addNewComment = ({ token, commentFromInput, userData }) => {
     const inputFormElement = document.querySelector(".add-form");
     const loadingFormElement = document.querySelector(".loading");
     
@@ -15,16 +15,16 @@ export const addNewComment = ({ token, commentFromInput }) => {
     loadingFormElement.classList.add("display-flex");
     inputFormElement.classList.add("display-hidden");
 
-    postComment({ textUser, token });
+    postComment({ textUser, token, userData });
 
 };
 
-const postComment = ({ textUser, token }) => {
+const postComment = ({ textUser, token, userData }) => {
 
     postCommentByFetch({ textUser, token })
         .then(() => {
 
-            getCommentsByFetchResponse({ comments });
+            getCommentsByFetchResponse({ comments, token, userData });
 
             const inputTextElement = document.querySelector(".add-form-text");
             inputTextElement.value = "";

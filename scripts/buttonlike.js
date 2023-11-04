@@ -8,19 +8,25 @@ function delay(interval = 300) {
     });
 }
 
-export const initButtonLikeListeners = ({ comments }) => {
+export const initButtonLikeListeners = ({ comments, token, userData }) => {
 
     const buttonsLikeElement = document.querySelectorAll(".like-button");
 
     for (const buttonLikeElement of buttonsLikeElement) {
         buttonLikeElement.addEventListener("click", (event) => {
             event.stopPropagation();
-            
+
             let index = buttonLikeElement.dataset.index;
             buttonLikeElement.classList.add("-loading-like");
 
+            if (!token) {
+                buttonLikeElement.classList.remove("-loading-like");
+                return
+            }
+
             delay(2000).then(() => {
                 const comment = comments[index];
+
 
                 if (!comment.isLiked) {
                     comment.isLiked = true;
@@ -30,9 +36,10 @@ export const initButtonLikeListeners = ({ comments }) => {
                     comment.isLiked = false;
                     comment.likes -= 1;
                 }
+                
                 buttonLikeElement.classList.remove("-loading-like");
 
-                renderPage({comments});
+                renderPage({ comments, token, userData });
             });
         })
     }

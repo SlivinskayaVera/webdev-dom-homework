@@ -48,8 +48,8 @@ export function renderPage({ comments, userData, token }) {
     appHtml.innerHTML = renderPageHTML;
 
     initButtonAuthorizationListener({ comments });
-    initReplyCommentListener();
-    initButtonLikeListeners({ comments });
-    initButtonSendCommentListener({ token });
+    initReplyCommentListener({comments, token, userData});
+    initButtonLikeListeners({ comments, token, userData });
+    initButtonSendCommentListener({ token, userData });
 
 };
