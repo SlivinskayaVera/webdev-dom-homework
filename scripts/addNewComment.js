@@ -1,34 +1,37 @@
 // Добавление нового коммента
 
-import {sanitizeHtml} from './sanitizeHtml.js';
-import {getCommentsByFetchResponse} from './main.js'
+import { sanitizeHtml } from './sanitizeHtml.js';
+import { getCommentsByFetchResponse } from './getCommentsRenderPage.js';
+import { postCommentByFetch } from './api.js';
+import { comments } from './main.js'
 
-const inputNameElement = document.getElementById("input-name");
-const inputTextElement = document.querySelector(".add-form-text");
-const inputFormElement = document.querySelector(".add-form");
-const loadingFormElement = document.querySelector(".loading");
 
-const addNewComment = ({token}) => {
-    const nameUser = sanitizeHtml(inputNameElement.value);
-    const textUser = sanitizeHtml(inputTextElement.value);
+export const addNewComment = ({ token, commentFromInput }) => {
+    const inputFormElement = document.querySelector(".add-form");
+    const loadingFormElement = document.querySelector(".loading");
+    
+    const textUser = sanitizeHtml(commentFromInput);
 
     loadingFormElement.classList.add("display-flex");
     inputFormElement.classList.add("display-hidden");
 
-    postComment({textUser, nameUser, token});
+    postComment({ textUser, token });
+
 };
 
-const postComment = ({textFromUser, nameFromUser, token}) => {
+const postComment = ({ textUser, token }) => {
 
-    postCommentByFetch({ textFromUser, nameFromUser, token })
+    postCommentByFetch({ textUser, token })
         .then(() => {
 
-            getCommentsByFetchResponse();
+            getCommentsByFetchResponse({ comments });
 
-            inputNameElement.value = "";
+            const inputTextElement = document.querySelector(".add-form-text");
             inputTextElement.value = "";
 
         }).catch((error) => {
+            const inputFormElement = document.querySelector(".add-form");
+            const loadingFormElement = document.querySelector(".loading");
 
             loadingFormElement.classList.remove("display-flex");
             inputFormElement.classList.remove("display-hidden");
@@ -40,7 +43,7 @@ const postComment = ({textFromUser, nameFromUser, token}) => {
 
             else if (error.message === 'Сервер сломался') {
 
-                postComment({textFromUser, nameFromUser, token});
+                postComment({ textUser, token });
                 console.log('пробую отправить запрос на сервер');
             }
 
@@ -50,4 +53,3 @@ const postComment = ({textFromUser, nameFromUser, token}) => {
         });
 };
 
-export {addNewComment, postComment}

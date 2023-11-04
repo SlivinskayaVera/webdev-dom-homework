@@ -1,32 +1,26 @@
-import {addNewComment} from './addNewComment.js'
+import { addNewComment } from './addNewComment.js'
 
-const buttonElement = document.querySelector(".add-form-button");
-const inputNameElement = document.getElementById("input-name");
-const inputTextElement = document.querySelector(".add-form-text");
 
-const initButtonSendCommentListener = ({token}) => {
+export const initButtonSendCommentListener = ({ token }) => {
 
-    
+    const buttonElement = document.querySelector(".add-form-button");
+    const inputTextElement = document.querySelector(".add-form-text");
+
+
     inputTextElement.addEventListener("keyup", (enter) => {
-        
-        if (enter.code === 'Enter' && inputNameElement.value !== "" && inputTextElement.value !== "") {
-            addNewComment({ token });
+
+        if (enter.code === 'Enter' && inputTextElement.value !== "") {
+            const commentFromInput = inputTextElement.value;
+
+            addNewComment({ token, commentFromInput });
             buttonElement.disabled = true;
         }
     });
-    
-    inputNameElement.addEventListener("keyup", (enter) => {
-        
-        if (enter.code === 'Enter' && inputNameElement.value !== "" && inputTextElement.value !== "") {
-            addNewComment({ token });
-            buttonElement.disabled = true;
-        }
-    })
-    
-    
+
+
     document.addEventListener("input", () => {
 
-        if (inputNameElement.value !== "" && inputTextElement.value !== "") {
+        if (inputTextElement.value !== "") {
             buttonElement.disabled = false;
         } else {
             buttonElement.disabled = true;
@@ -34,11 +28,10 @@ const initButtonSendCommentListener = ({token}) => {
     });
 
     buttonElement.addEventListener("click", () => {
-    
-        addNewComment({ token });
+        const commentFromInput = inputTextElement.value;
+
+        addNewComment({ token, commentFromInput });
         buttonElement.disabled = true;
     });
-    
-}
 
-export {initButtonSendCommentListener}
+}

@@ -1,12 +1,16 @@
 import { registerUser } from './api.js';
-import { drawEnterPage } from './main.js'
+import { comments } from './main.js'
+import { renderPage } from './renderPage.js';
+import { initButtonLikeListeners } from './buttonlike.js';
+import { initButtonSendCommentListener } from './buttonElementListeners.js';
+import { initReplyCommentListener } from './replyсomment.js';
 
-const newUser = ({ comments, userData, appHtml }) => {
+const newUser = () => {
     const registerName = document.getElementById('registerName');
     const registerLogin = document.getElementById('registerLogin');
     const registerPassword = document.getElementById('registerPassword');
 
-    registerUser({
+    let userData = registerUser({
         login: registerLogin.value,
         name: registerName.value,
         password: registerPassword.value
@@ -15,7 +19,12 @@ const newUser = ({ comments, userData, appHtml }) => {
             return userData = responseData.user;
         })
         .then(() => {
-            drawEnterPage();
+            renderPage({ comments, userData });
+            const token = userData.token;
+
+            initButtonSendCommentListener({ token });
+            initReplyCommentListener();
+            initButtonLikeListeners({ comments });
         })
         .catch((error) => {
             if (error.message === 'пользователь с таким логином уже существует') {
@@ -24,4 +33,4 @@ const newUser = ({ comments, userData, appHtml }) => {
         });
 }
 
-export {newUser}
+export { newUser }

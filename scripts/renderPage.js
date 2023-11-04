@@ -1,11 +1,11 @@
-import { renderComments } from './renderfComments.js';
+import { renderComments } from './renderComments.js';
+// import { comments } from './main.js'
 
 
-const renderPage = ({ comments, userData }) => {
+const renderPage = ({ userData, token, comments }) => {
     
-    const appHtml = document.querySelector('.container');
     const commentsHTML = renderComments({ comments });
-    const token = userData.token;
+    const appHtml = document.querySelector('.container');
 
     const renderPageHTML = `
         <div class="loading-comments">
@@ -14,6 +14,9 @@ const renderPage = ({ comments, userData }) => {
         <ul class="comments">${commentsHTML}</ul>
         <div class="loading">
             <p>Комментарий загружается...</p>
+        </div>
+        <div class="authorization ${token ? 'display-hidden' : 'display-flex'}">
+            <p>Чтобы добавить комментарий, <a class="authorizationButton" href="#">авторизуйтесь</a> .</p>
         </div>
         <div class="add-form ${token ? 'display-flex' : 'display-hidden'}">
             <input id="input-name" type="text" class="add-form-name" value='${userData.name}' disabled='true'/>

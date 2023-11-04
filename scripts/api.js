@@ -1,9 +1,9 @@
-const URL = 'https://wedev-api.sky.pro/api/v2/sliva/comments';
+const apiComments = 'https://wedev-api.sky.pro/api/v2/slivaaaaa/comments';
 const apiUsers = 'https://wedev-api.sky.pro/api/user';
 
 
 const getFetchResponse = () => {
-    return fetch(URL, {
+    return fetch(apiComments, {
         method: 'GET',
     })
         .then((response) => {
@@ -18,14 +18,12 @@ const getFetchResponse = () => {
 };
 
 
-const postCommentByFetch = ({textFromUser, nameFromUser, token}) => {
+const postCommentByFetch = ({textUser, token}) => {
 
-    return fetch(URL, {
+    return fetch(apiComments, {
         method: 'POST',
         body: JSON.stringify({
-            text: textFromUser,
-            name: nameFromUser,
-            forceError: true
+            text: textUser,
         }),
         headers: {
             Authorization: `Bearer ${token}`,

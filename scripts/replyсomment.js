@@ -1,8 +1,8 @@
 import { comments } from './main.js'
 
-const inputTextElement = document.querySelector(".add-form-text");
 
 const initReplyCommentListener = () => {
+    const inputTextElement = document.querySelector(".add-form-text");
     const commentsList = document.querySelectorAll('.comment');
 
     for (const comment of commentsList) {

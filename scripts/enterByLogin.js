@@ -5,7 +5,6 @@ import { initButtonSendCommentListener } from './buttonElementListeners.js';
 import { initReplyCommentListener } from './replyсomment.js';
 
 
-
 const enterByLogin = ({ comments, userData }) => {
 
     const enterLogin = document.getElementById('enterLogin');
@@ -21,12 +20,13 @@ const enterByLogin = ({ comments, userData }) => {
                 return userData = responseData.user;
             })
             .then(() => {
-                renderPage({ comments, userData });
                 const token = userData.token;
+                renderPage({ comments, userData, token });
+
                 initButtonSendCommentListener({ token });
                 initReplyCommentListener();
                 initButtonLikeListeners();
-                
+
             })
             .catch((error) => {
                 if (error.message === 'передан неправильный логин или пароль') {

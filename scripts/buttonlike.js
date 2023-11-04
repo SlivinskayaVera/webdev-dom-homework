@@ -1,4 +1,4 @@
-import { comments, renderCommentsList } from './main.js'
+import { renderCommentsList } from './renderCommentsList.js'
 
 function delay(interval = 300) {
     return new Promise((resolve) => {
@@ -8,14 +8,14 @@ function delay(interval = 300) {
     });
 }
 
-const initButtonLikeListeners = () => {
+export const initButtonLikeListeners = ({ comments }) => {
 
     const buttonsLikeElement = document.querySelectorAll(".like-button");
 
     for (const buttonLikeElement of buttonsLikeElement) {
         buttonLikeElement.addEventListener("click", (event) => {
             event.stopPropagation();
-
+            
             let index = buttonLikeElement.dataset.index;
             buttonLikeElement.classList.add("-loading-like");
 
@@ -32,10 +32,8 @@ const initButtonLikeListeners = () => {
                 }
                 buttonLikeElement.classList.remove("-loading-like");
 
-                renderCommentsList();
+                renderCommentsList({comments});
             });
         })
     }
 };
-
-export { initButtonLikeListeners }
