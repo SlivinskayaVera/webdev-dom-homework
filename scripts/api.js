@@ -40,6 +40,16 @@ const postCommentByFetch = ({textUser, token}) => {
     })
 };
 
+const delCommentByFetch = ({ID, token}) => {
+
+    return fetch(`${apiComments}/${ID}`, {
+        method: 'DELETE',
+        headers: {
+            Authorization: `Bearer ${token}`,
+          }
+    })
+};
+
 
 const registerUser = ({login, password, name}) => {
     return fetch(apiUsers, {
@@ -77,4 +87,4 @@ const enterUser = ({login, password}) => {
 }
 
 
-export { getFetchResponse, postCommentByFetch, enterUser, registerUser };
+export { getFetchResponse, postCommentByFetch, enterUser, registerUser, delCommentByFetch };

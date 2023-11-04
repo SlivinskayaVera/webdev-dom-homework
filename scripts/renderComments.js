@@ -19,6 +19,9 @@ const renderComments = ({comments}) => {
                             <span class="likes-counter">${comment.likes}</span>
                             <button data-index="${index}" class="like-button ${comment.isLiked ? '-active-like' : ''}"></button>
                         </div>
+                        <div class="comment-delete-button">
+                            <button class="delete-button" data-index="${index}">Удалить</button>
+                        </div>
                     </div>
                     </li>`
     }).join("");

@@ -2,11 +2,9 @@ import { renderComments } from './renderComments.js';
 import { initReplyCommentListener } from './replyсomment.js';
 import { initButtonLikeListeners } from './buttonlike.js';
 import { initButtonAuthorizationListener } from './authorizationButton.js';
-import { initButtonSendCommentListener } from './buttonElementListeners.js'
+import { initButtonSendCommentListener } from './buttonElementListeners.js';
+import { initButtonDeleteListener } from './buttonDelete.js'
 
-
-
-// Рендер комментов
 
 export function renderPage({ comments, userData, token }) {
 
@@ -51,5 +49,6 @@ export function renderPage({ comments, userData, token }) {
     initReplyCommentListener({comments, token, userData});
     initButtonLikeListeners({ comments, token, userData });
     initButtonSendCommentListener({ token, userData });
+    initButtonDeleteListener({comments, token, userData});
 
 };
