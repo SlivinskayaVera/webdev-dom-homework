@@ -1,4 +1,4 @@
-import { renderCommentsList } from './renderCommentsList.js'
+import { renderPage } from './renderPage.js'
 
 function delay(interval = 300) {
     return new Promise((resolve) => {
@@ -32,7 +32,7 @@ export const initButtonLikeListeners = ({ comments }) => {
                 }
                 buttonLikeElement.classList.remove("-loading-like");
 
-                renderCommentsList({comments});
+                renderPage({comments});
             });
         })
     }

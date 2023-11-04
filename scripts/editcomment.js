@@ -1,5 +1,5 @@
 import { comments } from './main.js'
-import { renderCommentsList } from './renderCommentsList.js'
+import { renderPage } from './renderPage.js'
 
 const initButtonEditCommentListener = () => {
     const buttonsEditCommentElement = document.querySelectorAll(".button-edit-comment");
@@ -30,7 +30,7 @@ const initButtonEditCommentListener = () => {
                     comments[index].isEditor = false;
                     buttonEditCommentElement.textContent = 'Редактировать';
 
-                    renderCommentsList({comments});
+                    renderPage({comments});
                 }
 
             })

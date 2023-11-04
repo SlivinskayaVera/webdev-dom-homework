@@ -1,8 +1,8 @@
 import { getFetchResponse } from './api.js';
-import { renderCommentsList } from './renderCommentsList.js';
+import { renderPage } from './renderPage.js';
 
 
-export const getCommentsByFetchResponse = ({comments, userData}) => {
+export const getCommentsByFetchResponse = ({comments, userData, token}) => {
     const loadingCommentsElement = document.querySelector(".loading-comments");
     loadingCommentsElement.classList.add("display-flex");
 
@@ -22,7 +22,7 @@ export const getCommentsByFetchResponse = ({comments, userData}) => {
             });
 
             comments = appComments;
-            renderCommentsList({ comments });
+            renderPage({ comments, userData, token });
         })
         .then(() => {
             loadingCommentsElement.classList.remove("display-flex");

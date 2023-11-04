@@ -5,16 +5,16 @@ import { newUser } from './registrationUser.js';
 
 // кнопка регистрации 
 
-const initButtonRegisterListener = () => {
+const initButtonRegisterListener = ({comments}) => {
     const registerFormButton = document.querySelector('.register-form-button');
 
     registerFormButton.addEventListener('click', () => {
-        newUser();
+        newUser({comments});
     })
 
 }
 
-export const drawRegistrationPage = () => {
+export const drawRegistrationPage = ({comments}) => {
 const appHtml = document.querySelector('.container');
 
 
@@ -31,7 +31,7 @@ const appHtml = document.querySelector('.container');
 
     appHtml.innerHTML = registerForm;
 
-    initButtonRegisterListener();
+    initButtonRegisterListener({comments});
 
     const enterFormButton = document.querySelector('.enter-button');
 

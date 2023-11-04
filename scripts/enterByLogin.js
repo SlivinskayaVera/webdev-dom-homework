@@ -1,8 +1,5 @@
 import { enterUser } from './api.js';
-import { renderPage } from './renderPage.js';
-import { initButtonLikeListeners } from './buttonlike.js';
-import { initButtonSendCommentListener } from './buttonElementListeners.js';
-import { initReplyCommentListener } from './replyсomment.js';
+import { renderPage } from './renderPage.js'
 
 
 const enterByLogin = ({ comments, userData }) => {
@@ -22,11 +19,6 @@ const enterByLogin = ({ comments, userData }) => {
             .then(() => {
                 const token = userData.token;
                 renderPage({ comments, userData, token });
-
-                initButtonSendCommentListener({ token });
-                initReplyCommentListener();
-                initButtonLikeListeners();
-
             })
             .catch((error) => {
                 if (error.message === 'передан неправильный логин или пароль') {

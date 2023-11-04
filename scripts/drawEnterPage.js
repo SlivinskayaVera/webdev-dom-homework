@@ -1,4 +1,4 @@
-import { comments, userData } from './main.js';
+import { userData } from './main.js';
 import { drawRegistrationPage } from './drawRegistrationPage.js';
 import { enterByLogin } from './enterByLogin.js'
 
@@ -33,6 +33,6 @@ export const drawEnterPage = ({appHtml, comments}) => {
     const registerButton = document.querySelector('.register-button');
 
     registerButton.addEventListener('click', () => {
-        drawRegistrationPage();
+        drawRegistrationPage({comments});
     })
 }
