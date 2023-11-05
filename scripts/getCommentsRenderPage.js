@@ -2,12 +2,17 @@ import { getFetchResponse } from './api.js';
 import { renderPage } from './renderPage.js';
 
 
-export const getCommentsByFetchResponse = ({comments, userData, token}) => {
-    const loadingCommentsElement = document.querySelector(".loading-comments");
-    loadingCommentsElement.classList.add("display-flex");
+export const getCommentsByFetchResponse = ({ comments, userData, token }) => {
+
+    try {
+        const loadingCommentsElement = document.querySelector(".loading-comments");
+        loadingCommentsElement.classList.add("display-flex");
+    } catch {
+        console.log('Не удалось обнаружить селекторы');
+    }
 
 
-    getFetchResponse()
+    getFetchResponse({ token })
         .then((responseComments) => {
             const appComments = responseComments.comments.map((comment) => {
 
@@ -26,7 +31,12 @@ export const getCommentsByFetchResponse = ({comments, userData, token}) => {
             renderPage({ comments, userData, token });
         })
         .then(() => {
-            loadingCommentsElement.classList.remove("display-flex");
+            try {
+                const loadingCommentsElement = document.querySelector(".loading-comments");
+                loadingCommentsElement.classList.remove("display-flex");
+            } catch {
+                console.log('Не удалось обнаружить селекторы');
+            }
         })
         .catch((error) => {
             if (error.message === 'Сервер сломался') {

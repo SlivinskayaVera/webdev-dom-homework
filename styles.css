@@ -131,7 +131,7 @@ body {
 
 .loading-comments {
   padding: 20px;
-  margin-top: 48px;
+  margin-bottom: 48px;
   display: none;
   flex-direction: column;
 }

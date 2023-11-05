@@ -17,7 +17,7 @@ export function renderPage({ comments, userData, token }) {
         loadingFormElement.classList.remove("display-flex");
         inputFormElement.classList.remove("display-hidden");
     } catch {
-        console.log('ну не получилось, ну нету');
+        console.log('Не удалось обнаружить селекторы');
     }
 
 

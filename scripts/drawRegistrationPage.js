@@ -36,7 +36,7 @@ const appHtml = document.querySelector('.container');
     const enterFormButton = document.querySelector('.enter-button');
 
     enterFormButton.addEventListener('click', () => {
-        drawEnterPage({ appHtml });
+        drawEnterPage({ appHtml, comments });
     })
 
 }

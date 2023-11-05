@@ -2,9 +2,12 @@ const apiComments = 'https://wedev-api.sky.pro/api/v2/vera/comments';
 const apiUsers = 'https://wedev-api.sky.pro/api/user';
 
 
-const getFetchResponse = () => {
+const getFetchResponse = ({token}) => {
     return fetch(apiComments, {
         method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`,
+          }
     })
         .then((response) => {
             if (response.status === 200) {

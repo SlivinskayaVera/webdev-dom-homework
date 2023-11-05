@@ -1,10 +1,11 @@
 import { registerUser } from './api.js';
-import { renderPage } from './renderPage.js'
+import { renderPage } from './renderPage.js';
 
 const newUser = ({comments}) => {
     const registerName = document.getElementById('registerName');
     const registerLogin = document.getElementById('registerLogin');
     const registerPassword = document.getElementById('registerPassword');
+
 
     let userData = registerUser({
         login: registerLogin.value,
@@ -16,7 +17,6 @@ const newUser = ({comments}) => {
         })
         .then(() => {
             const token = userData.token;
-            console.log(comments);
             renderPage({ comments, userData, token });
         })
         .catch((error) => {

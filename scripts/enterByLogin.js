@@ -1,5 +1,5 @@
 import { enterUser } from './api.js';
-import { renderPage } from './renderPage.js'
+import { getCommentsByFetchResponse } from './getCommentsRenderPage.js'
 
 
 const enterByLogin = ({ comments, userData }) => {
@@ -18,7 +18,7 @@ const enterByLogin = ({ comments, userData }) => {
             })
             .then(() => {
                 const token = userData.token;
-                renderPage({ comments, userData, token });
+                getCommentsByFetchResponse({ comments, userData, token });
             })
             .catch((error) => {
                 if (error.message === 'передан неправильный логин или пароль') {
