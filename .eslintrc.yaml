@@ -9,6 +9,8 @@
     "prettier"
   ],
   "parserOptions": {
+    "sourceType": "module",
+    "allowImportExportEverywhere": true,
     "ecmaVersion": 2020
   },
   "rules": {
