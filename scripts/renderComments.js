@@ -1,16 +1,23 @@
+import { format } from "date-fns";
+
 const renderComments = ({ comments }) => {
     const commentsHTML = comments
         .map((comment, index) => {
-            const correctDate = new Date(comment.date)
-                .toLocaleString("ru-RU", {
-                    year: "2-digit",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: false,
-                })
-                .replace(",", "");
+            const correctDate = format(
+                new Date(comment.date),
+                "yyyy-MM-dd hh.mm.ss",
+            );
+
+            // const correctDate = new Date(comment.date)
+            //     .toLocaleString("ru-RU", {
+            //         year: "2-digit",
+            //         month: "2-digit",
+            //         day: "2-digit",
+            //         hour: "2-digit",
+            //         minute: "2-digit",
+            //         hour12: false,
+            //     })
+            //     .replace(",", "");
 
             return `<li class="comment" data-index="${index}">
                     <div class="comment-header">
