@@ -1,5 +1,5 @@
-import { getCommentsByFetchResponse } from './getCommentsRenderPage.js';
-import { addLikeByFetch } from './api.js';
+import { getCommentsByFetchResponse } from "./getCommentsRenderPage.js";
+import { addLikeByFetch } from "./api.js";
 
 function delay(interval = 300) {
     return new Promise((resolve) => {
@@ -10,32 +10,29 @@ function delay(interval = 300) {
 }
 
 export const initButtonLikeListeners = ({ comments, token, userData }) => {
-
     const buttonsLikeElement = document.querySelectorAll(".like-button");
 
     for (const buttonLikeElement of buttonsLikeElement) {
         buttonLikeElement.addEventListener("click", (event) => {
-            
             event.stopPropagation();
 
             if (!token) {
                 buttonLikeElement.classList.remove("-loading-like");
-                return
+                return;
             }
 
             buttonLikeElement.classList.add("-loading-like");
 
             delay(1000).then(() => {
-            let index = buttonLikeElement.dataset.index;
-            const comment = comments[index];
-            const ID = comment.id;
+                let index = buttonLikeElement.dataset.index;
+                const comment = comments[index];
+                const ID = comment.id;
 
-            addLikeByFetch({ ID, token })
-                .then(() => {
+                addLikeByFetch({ ID, token }).then(() => {
                     getCommentsByFetchResponse({ comments, token, userData });
                     buttonLikeElement.classList.remove("-loading-like");
-                })
-            })
+                });
+            });
         });
     }
-}
+};

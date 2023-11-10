@@ -1,22 +1,20 @@
-// рисует форму регистрации 
+// рисует форму регистрации
 
-import { drawEnterPage } from './drawEnterPage.js';
-import { newUser } from './registrationUser.js';
+import { drawEnterPage } from "./drawEnterPage.js";
+import { newUser } from "./registrationUser.js";
 
-// кнопка регистрации 
+// кнопка регистрации
 
-const initButtonRegisterListener = ({comments}) => {
-    const registerFormButton = document.querySelector('.register-form-button');
+const initButtonRegisterListener = ({ comments }) => {
+    const registerFormButton = document.querySelector(".register-form-button");
 
-    registerFormButton.addEventListener('click', () => {
-        newUser({comments});
-    })
+    registerFormButton.addEventListener("click", () => {
+        newUser({ comments });
+    });
+};
 
-}
-
-export const drawRegistrationPage = ({comments}) => {
-const appHtml = document.querySelector('.container');
-
+export const drawRegistrationPage = ({ comments }) => {
+    const appHtml = document.querySelector(".container");
 
     const registerForm = `
     <div class="register-form">
@@ -31,12 +29,11 @@ const appHtml = document.querySelector('.container');
 
     appHtml.innerHTML = registerForm;
 
-    initButtonRegisterListener({comments});
+    initButtonRegisterListener({ comments });
 
-    const enterFormButton = document.querySelector('.enter-button');
+    const enterFormButton = document.querySelector(".enter-button");
 
-    enterFormButton.addEventListener('click', () => {
+    enterFormButton.addEventListener("click", () => {
         drawEnterPage({ appHtml, comments });
-    })
-
-}
+    });
+};
