@@ -1,18 +1,20 @@
-import { comments } from './main.js'
-import { renderPage } from './renderPage.js'
+import { comments } from "./main.js";
+import { renderPage } from "./renderPage.js";
 
 const initButtonEditCommentListener = () => {
-    const buttonsEditCommentElement = document.querySelectorAll(".button-edit-comment");
+    const buttonsEditCommentElement = document.querySelectorAll(
+        ".button-edit-comment",
+    );
 
     for (const buttonEditCommentElement of buttonsEditCommentElement) {
         buttonEditCommentElement.addEventListener("click", (event) => {
-
             event.stopPropagation();
 
             const index = buttonEditCommentElement.dataset.index;
-            const commentElement = document.querySelectorAll('.comment-body')[index];
+            const commentElement =
+                document.querySelectorAll(".comment-body")[index];
 
-            buttonEditCommentElement.textContent = 'Сохранить';
+            buttonEditCommentElement.textContent = "Сохранить";
             comments[index].isEditor = true;
 
             commentElement.innerHTML = `
@@ -21,22 +23,19 @@ const initButtonEditCommentListener = () => {
                 </div>`;
 
             buttonEditCommentElement.addEventListener("click", () => {
-
-                const inputTextElement = document.querySelector(".edit-form-text");
+                const inputTextElement =
+                    document.querySelector(".edit-form-text");
 
                 if (inputTextElement.value !== "") {
-
                     comments[index].text = inputTextElement.value;
                     comments[index].isEditor = false;
-                    buttonEditCommentElement.textContent = 'Редактировать';
+                    buttonEditCommentElement.textContent = "Редактировать";
 
-                    renderPage({comments});
+                    renderPage({ comments });
                 }
-
-            })
-
-        })
+            });
+        });
     }
 };
 
-export { initButtonEditCommentListener }
+export { initButtonEditCommentListener };

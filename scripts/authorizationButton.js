@@ -1,11 +1,12 @@
-import { drawEnterPage } from './drawEnterPage.js'
+import { drawEnterPage } from "./drawEnterPage.js";
 
-export const initButtonAuthorizationListener = ({comments}) => {
+export const initButtonAuthorizationListener = ({ comments }) => {
+    const appHtml = document.querySelector(".container");
+    const buttonForAuthorization = document.querySelector(
+        ".authorizationButton",
+    );
 
-    const appHtml = document.querySelector('.container');
-    const buttonForAuthorization = document.querySelector('.authorizationButton');
-
-    buttonForAuthorization.addEventListener('click', () => {
+    buttonForAuthorization.addEventListener("click", () => {
         drawEnterPage({ comments, appHtml });
     });
-}
+};

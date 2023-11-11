@@ -1,20 +1,18 @@
-import { userData } from './main.js';
-import { drawRegistrationPage } from './drawRegistrationPage.js';
-import { enterByLogin } from './enterByLogin.js'
-
+import { userData } from "./main.js";
+import { drawRegistrationPage } from "./drawRegistrationPage.js";
+import { enterByLogin } from "./enterByLogin.js";
 
 // кнопка войти: иницализация и обработчик на вход в учетку
 
-const initButtonEnterListener = ({comments}) => {
-    const enterFormButton = document.querySelector('.enter-form-button');
+const initButtonEnterListener = ({ comments }) => {
+    const enterFormButton = document.querySelector(".enter-form-button");
 
-    enterFormButton.addEventListener('click', () => {
+    enterFormButton.addEventListener("click", () => {
         enterByLogin({ comments, userData });
     });
-}
+};
 
-export const drawEnterPage = ({appHtml, comments}) => {
-
+export const drawEnterPage = ({ appHtml, comments }) => {
     const enterFormHTML = `
         <div class="enter-form">
             <h3 class="enter-form-header">Форма входа</h3>
@@ -27,12 +25,11 @@ export const drawEnterPage = ({appHtml, comments}) => {
 
     appHtml.innerHTML = enterFormHTML;
 
-    initButtonEnterListener({comments});
+    initButtonEnterListener({ comments });
 
+    const registerButton = document.querySelector(".register-button");
 
-    const registerButton = document.querySelector('.register-button');
-
-    registerButton.addEventListener('click', () => {
-        drawRegistrationPage({comments});
-    })
-}
+    registerButton.addEventListener("click", () => {
+        drawRegistrationPage({ comments });
+    });
+};
