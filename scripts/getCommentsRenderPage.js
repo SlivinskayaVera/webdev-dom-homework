@@ -16,6 +16,7 @@ export const getCommentsByFetchResponse = ({ comments, userData, token }) => {
                 return {
                     id: comment.id,
                     name: comment.author.name,
+                    login: comment.author.login,
                     date: new Date(comment.date),
                     text: comment.text,
                     likes: comment.likes,

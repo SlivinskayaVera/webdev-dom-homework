@@ -18,7 +18,7 @@ export function renderPage({ comments, userData, token }) {
         console.log("Не удалось обнаружить селекторы");
     }
 
-    const commentsHTML = renderComments({ comments });
+    const commentsHTML = renderComments({ comments, token, userData });
 
     const renderPageHTML = `
         <div class="loading-comments">
