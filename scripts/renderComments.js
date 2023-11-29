@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 
-const renderComments = ({ comments }) => {
+const renderComments = ({ comments, token, userData }) => {
     const commentsHTML = comments
         .map((comment, index) => {
             const correctDate = format(
@@ -37,7 +37,11 @@ const renderComments = ({ comments }) => {
                             }"></button>
                         </div>
                         <div class="comment-delete-button">
-                            <button class="delete-button" data-index="${index}">Удалить</button>
+                            <button class="${
+                                token && comment.login === userData.login
+                                    ? "delete-button"
+                                    : "display-hidden"
+                            }" data-index="${index}">Удалить</button>
                         </div>
                     </div>
                     </li>`;
